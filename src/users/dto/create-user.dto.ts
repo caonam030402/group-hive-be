@@ -4,6 +4,7 @@ import {
   // decorators here
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   MinLength,
 } from 'class-validator';
@@ -50,4 +51,10 @@ export class CreateUserDto {
   status?: StatusDto;
 
   hash?: string | null;
+}
+
+export class UserDto {
+  @ApiProperty()
+  @IsNumber()
+  id: number;
 }

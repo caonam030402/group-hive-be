@@ -33,8 +33,11 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   },
 });
 
+import { OtpsModule } from './otps/otps.module';
+
 @Module({
   imports: [
+    OtpsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
