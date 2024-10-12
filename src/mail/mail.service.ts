@@ -63,6 +63,29 @@ export class MailService {
     });
   }
 
+  async confirmOtp(
+    mailData: MailData<{ code: number; email: string; expires: number }>,
+  ): Promise<void> {
+    await this.mailerService.sendMail({
+      to: mailData.to,
+      subject: '',
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'src',
+        'mail',
+        'mail-templates',
+        'confirm-otp.hbs',
+      ),
+      context: {
+        otp: mailData.data.code,
+        name: mailData.data.email,
+        validityPeriod: mailData.data.expires,
+      },
+    });
+  }
+
   async forgotPassword(
     mailData: MailData<{ hash: string; tokenExpires: number }>,
   ): Promise<void> {

@@ -5,10 +5,14 @@ import { OtpRepository } from './infrastructure/persistence/otp.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Otp } from './domain/otp';
 import dayjs from 'dayjs';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class OtpsService {
-  constructor(private readonly otpRepository: OtpRepository) {}
+  constructor(
+    private readonly otpRepository: OtpRepository,
+    private MailService: MailService,
+  ) {}
 
   async create(createOtpDto: CreateOtpDto) {
     const findUser = await this.otpRepository.findByUser(createOtpDto.user);
@@ -21,14 +25,20 @@ export class OtpsService {
         code: codeGenerator,
         expiresAt,
       });
-      return {
-        expiresAt,
-      };
     }
 
-    await this.update(findUser.id, {
+    await this.update(findUser!.id, {
       code: codeGenerator,
       expiresAt,
+    });
+
+    await this.MailService.confirmOtp({
+      to: findUser?.user.email || '',
+      data: {
+        code: codeGenerator,
+        email: findUser?.user.email || '',
+        expires: createOtpDto.expiresTime,
+      },
     });
 
     return {
