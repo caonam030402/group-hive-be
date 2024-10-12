@@ -9,4 +9,8 @@ export class CreateOtpDto {
   @IsOptional()
   @Type(() => UserEntity)
   user: UserEntity;
+
+  @ApiPropertyOptional({ type: Number })
+  @IsOptional()
+  expiresTime: number;
 }

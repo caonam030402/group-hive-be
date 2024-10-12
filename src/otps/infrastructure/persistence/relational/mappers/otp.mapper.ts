@@ -8,6 +8,7 @@ export class OtpMapper {
     domainEntity.id = raw.id;
     domainEntity.code = raw.code;
     domainEntity.user = raw.user;
+    domainEntity.expiresTime = raw.expiresTime;
     domainEntity.expiresAt = raw.expiresAt;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -30,6 +31,7 @@ export class OtpMapper {
     }
 
     persistenceEntity.code = domainEntity.code;
+    persistenceEntity.expiresTime = domainEntity.expiresTime;
     persistenceEntity.expiresAt = domainEntity.expiresAt;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;

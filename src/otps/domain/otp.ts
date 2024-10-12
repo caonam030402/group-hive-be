@@ -19,6 +19,9 @@ export class Otp {
   })
   user: UserEntity;
 
+  @ApiProperty({ example: 60 })
+  expiresTime: number; // in seconds
+
   @ApiProperty()
   expiresAt: Date;
 

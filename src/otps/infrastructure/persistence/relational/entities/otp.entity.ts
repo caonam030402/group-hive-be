@@ -1,6 +1,8 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -18,17 +20,24 @@ export class OtpEntity extends EntityRelationalHelper {
   id: string;
 
   @ApiProperty()
+  @Column({ nullable: true })
   code: number;
 
   @ApiProperty({
     type: () => UserEntity,
   })
+  @JoinColumn()
   @OneToOne(() => UserEntity, {
     eager: true,
   })
   user: UserEntity;
 
+  @ApiProperty({ example: 60 })
+  @Column()
+  expiresTime: number; // in seconds
+
   @ApiProperty()
+  @Column({ nullable: true })
   expiresAt: Date;
 
   @ApiProperty()

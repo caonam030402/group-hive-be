@@ -5,7 +5,7 @@ import { Otp } from '../../domain/otp';
 
 export abstract class OtpRepository {
   abstract create(
-    data: Omit<Otp, 'id' | 'createdAt' | 'updatedAt' | 'expiresAt' | 'code'>,
+    data: Omit<Otp, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<Otp>;
 
   abstract findAllWithPagination({
@@ -22,4 +22,6 @@ export abstract class OtpRepository {
   ): Promise<Otp | null>;
 
   abstract remove(id: Otp['id']): Promise<void>;
+
+  abstract findByUser(user: Otp['user']): Promise<NullableType<Otp>>;
 }

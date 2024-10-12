@@ -44,10 +44,20 @@ export class OtpRelationalRepository implements OtpRepository {
     return entity ? OtpMapper.toDomain(entity) : null;
   }
 
+  async findByUser(user: Otp['user']): Promise<NullableType<Otp>> {
+    const entity = await this.otpRepository.findOne({
+      where: { user },
+    });
+
+    return entity ? OtpMapper.toDomain(entity) : null;
+  }
+
   async update(id: Otp['id'], payload: Partial<Otp>): Promise<Otp> {
     const entity = await this.otpRepository.findOne({
       where: { id },
     });
+
+    console.log(payload);
 
     if (!entity) {
       throw new Error('Record not found');

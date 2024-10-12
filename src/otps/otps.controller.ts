@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Query,
 } from '@nestjs/common';
 import { OtpsService } from './otps.service';
@@ -20,7 +19,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Otp } from './domain/otp';
-import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
@@ -30,7 +28,7 @@ import { FindAllOtpsDto } from './dto/find-all-otps.dto';
 
 @ApiTags('Otps')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'otps',
   version: '1',
