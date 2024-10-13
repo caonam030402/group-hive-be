@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateOtpDto } from './dto/create-otp.dto';
 import { UpdateOtpDto } from './dto/update-otp.dto';
 import { OtpRepository } from './infrastructure/persistence/otp.repository';
@@ -19,18 +19,25 @@ export class OtpsService {
     const codeGenerator = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = dayjs().add(createOtpDto.expiresTime, 'second').toDate();
 
+    if (!findUser?.id) {
+      throw new BadRequestException({
+        message: 'User not found',
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
     if (!findUser) {
       await this.otpRepository.create({
         ...createOtpDto,
         code: codeGenerator,
         expiresAt,
       });
+    } else {
+      await this.update(findUser!.id, {
+        code: codeGenerator,
+        expiresAt,
+      });
     }
-
-    await this.update(findUser!.id, {
-      code: codeGenerator,
-      expiresAt,
-    });
 
     await this.MailService.confirmOtp({
       to: findUser?.user.email || '',
