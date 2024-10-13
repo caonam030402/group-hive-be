@@ -24,6 +24,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { User } from '../users/domain/user';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
+import { CreateOtpDto } from '../otps/dto/create-otp.dto';
 
 @ApiTags('Auth')
 @Controller({
@@ -83,6 +84,17 @@ export class AuthController {
       resetPasswordDto.hash,
       resetPasswordDto.password,
     );
+  }
+
+  @Post('otp/registration')
+  @HttpCode(HttpStatus.CREATED)
+  async createOtpRegistration(@Body() createOtpDto: CreateOtpDto): Promise<
+    | {
+        expiresAt: Date;
+      }
+    | undefined
+  > {
+    return this.service.createOtpRegistration(createOtpDto);
   }
 
   @ApiBearerAuth()

@@ -14,19 +14,19 @@ export class OtpsService {
     private MailService: MailService,
   ) {}
 
-  async create(createOtpDto: CreateOtpDto) {
+  async create(createOtpDto: CreateOtpDto, _isNew: boolean = false) {
     const findUser = await this.otpRepository.findByUser(createOtpDto.user);
     const codeGenerator = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = dayjs().add(createOtpDto.expiresTime, 'second').toDate();
 
-    if (!findUser?.id) {
+    if (!findUser?.id && !_isNew) {
       throw new BadRequestException({
         message: 'User not found',
         status: HttpStatus.BAD_REQUEST,
       });
     }
 
-    if (!findUser) {
+    if (!findUser && _isNew) {
       await this.otpRepository.create({
         ...createOtpDto,
         code: codeGenerator,
@@ -40,10 +40,10 @@ export class OtpsService {
     }
 
     await this.MailService.confirmOtp({
-      to: findUser?.user.email || '',
+      to: findUser?.user.email || createOtpDto.user.email || '',
       data: {
         code: codeGenerator,
-        email: findUser?.user.email || '',
+        email: findUser?.user.email || createOtpDto.user.email || '',
         expires: createOtpDto.expiresTime,
       },
     });

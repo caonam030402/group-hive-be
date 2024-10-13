@@ -28,6 +28,10 @@ import { Session } from '../session/domain/session';
 import { SessionService } from '../session/session.service';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { User } from '../users/domain/user';
+import { CreateOtpDto } from '../otps/dto/create-otp.dto';
+import { OtpRepository } from '../otps/infrastructure/persistence/otp.repository';
+import { OtpsService } from '../otps/otps.service';
+import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +41,8 @@ export class AuthService {
     private sessionService: SessionService,
     private mailService: MailService,
     private configService: ConfigService<AllConfigType>,
+    private otpRepository: OtpRepository,
+    private otpService: OtpsService,
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
@@ -194,7 +200,6 @@ export class AuthService {
   }
 
   async register(dto: AuthRegisterLoginDto): Promise<void> {
-    console.log(dto);
     const user = await this.usersService.create({
       ...dto,
       email: dto.email,
@@ -208,26 +213,36 @@ export class AuthService {
       lastName: null,
     });
 
-    const hash = await this.jwtService.signAsync(
+    //1. create confirm email otp
+    await this.otpService.create(
       {
-        confirmEmailUserId: user.id,
+        expiresTime: 60,
+        user: user as UserEntity,
       },
-      {
-        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
-          infer: true,
-        }),
-        expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
-          infer: true,
-        }),
-      },
+      true,
     );
 
-    await this.mailService.userSignUp({
-      to: dto.email,
-      data: {
-        hash,
-      },
-    });
+    //2. create confirm email link
+    // const hash = await this.jwtService.signAsync(
+    //   {
+    //     confirmEmailUserId: user.id,
+    //   },
+    //   {
+    //     secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+    //       infer: true,
+    //     }),
+    //     expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
+    //       infer: true,
+    //     }),
+    //   },
+    // );
+
+    // await this.mailService.userSignUp({
+    //   to: dto.email,
+    //   data: {
+    //     hash,
+    //   },
+    // });
   }
 
   async confirmEmail(hash: string): Promise<void> {
@@ -311,6 +326,21 @@ export class AuthService {
     };
 
     await this.usersService.update(user.id, user);
+  }
+
+  async createOtpRegistration(otp: CreateOtpDto) {
+    const user = await this.usersService.findById(otp.user.id);
+
+    if (!user) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: `notFound`,
+      });
+    }
+
+    if (user.status?.id?.toString() !== StatusEnum.inactive.toString()) {
+      return this.otpService.create(otp);
+    }
   }
 
   async forgotPassword(email: string): Promise<void> {
