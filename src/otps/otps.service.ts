@@ -6,6 +6,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Otp } from './domain/otp';
 import dayjs from 'dayjs';
 import { MailService } from '../mail/mail.service';
+import { ConfirmOtpDto } from './dto/confirm-otp';
 
 @Injectable()
 export class OtpsService {
@@ -18,6 +19,14 @@ export class OtpsService {
     const findUser = await this.otpRepository.findByUser(createOtpDto.user);
     const codeGenerator = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = dayjs().add(createOtpDto.expiresTime, 'second').toDate();
+    const numberOfSubmissions = findUser?.numberOfSubmissions || 0 + 1;
+
+    if (numberOfSubmissions > 5) {
+      throw new BadRequestException({
+        message: 'Too many requests try again in 5 min',
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
 
     if (!findUser?.id && !_isNew) {
       throw new BadRequestException({
@@ -31,11 +40,13 @@ export class OtpsService {
         ...createOtpDto,
         code: codeGenerator,
         expiresAt,
+        numberOfSubmissions,
       });
     } else {
       await this.update(findUser!.id, {
         code: codeGenerator,
         expiresAt,
+        numberOfSubmissions,
       });
     }
 
@@ -76,5 +87,32 @@ export class OtpsService {
 
   remove(id: Otp['id']) {
     return this.otpRepository.remove(id);
+  }
+
+  async confirm(confirmOtpDto: ConfirmOtpDto) {
+    const findUser = await this.otpRepository.findByUser(confirmOtpDto.user);
+
+    if (!findUser) {
+      throw new BadRequestException({
+        message: 'User not found',
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    if (findUser.code !== confirmOtpDto.code) {
+      throw new BadRequestException({
+        message: 'Invalid code',
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    if (findUser.expiresAt <= dayjs().toDate()) {
+      throw new BadRequestException({
+        message: 'Code expired',
+        status: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    return true;
   }
 }

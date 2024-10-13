@@ -12,6 +12,7 @@ export class OtpMapper {
     domainEntity.expiresAt = raw.expiresAt;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.numberOfSubmissions = raw.numberOfSubmissions;
 
     return domainEntity;
   }
@@ -30,6 +31,7 @@ export class OtpMapper {
       persistenceEntity.user = user;
     }
 
+    persistenceEntity.numberOfSubmissions = domainEntity.numberOfSubmissions;
     persistenceEntity.code = domainEntity.code;
     persistenceEntity.expiresTime = domainEntity.expiresTime;
     persistenceEntity.expiresAt = domainEntity.expiresAt;

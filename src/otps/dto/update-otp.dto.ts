@@ -11,4 +11,7 @@ export class UpdateOtpDto extends PartialType(CreateOtpDto) {
 
   @IsOptional()
   expiresAt: Date;
+
+  @IsOptional()
+  numberOfSubmissions: number;
 }

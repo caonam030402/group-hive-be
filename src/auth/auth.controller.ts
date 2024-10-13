@@ -24,7 +24,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { User } from '../users/domain/user';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
-import { CreateOtpDto } from '../otps/dto/create-otp.dto';
+import { ConfirmOtpDto } from '../otps/dto/confirm-otp';
 
 @ApiTags('Auth')
 @Controller({
@@ -47,9 +47,8 @@ export class AuthController {
   }
 
   @Post('email/register')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async register(@Body() createUserDto: AuthRegisterLoginDto): Promise<void> {
-    // console.log(createUserDto);
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() createUserDto: AuthRegisterLoginDto) {
     return this.service.register(createUserDto);
   }
 
@@ -59,6 +58,12 @@ export class AuthController {
     @Body() confirmEmailDto: AuthConfirmEmailDto,
   ): Promise<void> {
     return this.service.confirmEmail(confirmEmailDto.hash);
+  }
+
+  @Post('email/confirm/otp')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async confirmEmailOtp(@Body() confirmEmailOtp: ConfirmOtpDto): Promise<void> {
+    return this.service.confirmEmailOtp(confirmEmailOtp);
   }
 
   @Post('email/confirm/new')
@@ -84,17 +89,6 @@ export class AuthController {
       resetPasswordDto.hash,
       resetPasswordDto.password,
     );
-  }
-
-  @Post('otp/registration')
-  @HttpCode(HttpStatus.CREATED)
-  async createOtpRegistration(@Body() createOtpDto: CreateOtpDto): Promise<
-    | {
-        expiresAt: Date;
-      }
-    | undefined
-  > {
-    return this.service.createOtpRegistration(createOtpDto);
   }
 
   @ApiBearerAuth()

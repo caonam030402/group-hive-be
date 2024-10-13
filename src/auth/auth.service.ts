@@ -28,10 +28,9 @@ import { Session } from '../session/domain/session';
 import { SessionService } from '../session/session.service';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { User } from '../users/domain/user';
-import { CreateOtpDto } from '../otps/dto/create-otp.dto';
-import { OtpRepository } from '../otps/infrastructure/persistence/otp.repository';
 import { OtpsService } from '../otps/otps.service';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
+import { ConfirmOtpDto } from '../otps/dto/confirm-otp';
 
 @Injectable()
 export class AuthService {
@@ -41,7 +40,6 @@ export class AuthService {
     private sessionService: SessionService,
     private mailService: MailService,
     private configService: ConfigService<AllConfigType>,
-    private otpRepository: OtpRepository,
     private otpService: OtpsService,
   ) {}
 
@@ -199,7 +197,7 @@ export class AuthService {
     };
   }
 
-  async register(dto: AuthRegisterLoginDto): Promise<void> {
+  async register(dto: AuthRegisterLoginDto) {
     const user = await this.usersService.create({
       ...dto,
       email: dto.email,
@@ -243,6 +241,10 @@ export class AuthService {
     //     hash,
     //   },
     // });
+
+    return {
+      id: user.id,
+    };
   }
 
   async confirmEmail(hash: string): Promise<void> {
@@ -286,6 +288,10 @@ export class AuthService {
     await this.usersService.update(user.id, user);
   }
 
+  async confirmEmailOtp(confirmEmailOtpDto: ConfirmOtpDto): Promise<void> {
+    await this.otpService.confirm(confirmEmailOtpDto);
+  }
+
   async confirmNewEmail(hash: string): Promise<void> {
     let userId: User['id'];
     let newEmail: User['email'];
@@ -326,21 +332,6 @@ export class AuthService {
     };
 
     await this.usersService.update(user.id, user);
-  }
-
-  async createOtpRegistration(otp: CreateOtpDto) {
-    const user = await this.usersService.findById(otp.user.id);
-
-    if (!user) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        error: `notFound`,
-      });
-    }
-
-    if (user.status?.id?.toString() !== StatusEnum.inactive.toString()) {
-      return this.otpService.create(otp);
-    }
   }
 
   async forgotPassword(email: string): Promise<void> {

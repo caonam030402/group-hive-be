@@ -41,6 +41,10 @@ export class OtpEntity extends EntityRelationalHelper {
   expiresAt: Date;
 
   @ApiProperty()
+  @Column({ nullable: true })
+  numberOfSubmissions: number;
+
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 

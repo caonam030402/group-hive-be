@@ -57,8 +57,6 @@ export class OtpRelationalRepository implements OtpRepository {
       where: { id },
     });
 
-    console.log(payload);
-
     if (!entity) {
       throw new Error('Record not found');
     }

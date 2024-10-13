@@ -11,6 +11,9 @@ export class Otp {
   @ApiProperty()
   code: number;
 
+  @ApiProperty()
+  numberOfSubmissions: number;
+
   @ApiProperty({
     type: () => UserEntity,
   })
