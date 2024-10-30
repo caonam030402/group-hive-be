@@ -3,6 +3,7 @@ import { FileType } from '../../files/domain/file';
 import { Role } from '../../roles/domain/role';
 import { Status } from '../../statuses/domain/status';
 import { ApiProperty } from '@nestjs/swagger';
+import { VerifiedEnum } from '../../statuses/statuses.enum';
 
 const idType = Number;
 
@@ -65,6 +66,11 @@ export class User {
     type: () => Status,
   })
   status?: Status;
+
+  @ApiProperty({
+    type: Number,
+  })
+  isVerified?: VerifiedEnum;
 
   @ApiProperty()
   createdAt: Date;

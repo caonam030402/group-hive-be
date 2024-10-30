@@ -10,6 +10,7 @@ import {
   Patch,
   Delete,
   SerializeOptions,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -25,6 +26,7 @@ import { NullableType } from '../utils/types/nullable.type';
 import { User } from '../users/domain/user';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
 import { ConfirmOtpDto } from '../otps/dto/confirm-otp';
+import { Response } from 'express';
 
 @ApiTags('Auth')
 @Controller({
@@ -61,9 +63,12 @@ export class AuthController {
   }
 
   @Post('email/confirm/otp')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async confirmEmailOtp(@Body() confirmEmailOtp: ConfirmOtpDto): Promise<void> {
-    return this.service.confirmEmailOtp(confirmEmailOtp);
+  @HttpCode(HttpStatus.CREATED)
+  async confirmEmailOtp(
+    @Body() confirmEmailOtp: ConfirmOtpDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<LoginResponseDto> {
+    return this.service.confirmEmailOtp(confirmEmailOtp, response);
   }
 
   @Post('email/confirm/new')

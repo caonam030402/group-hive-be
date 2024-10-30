@@ -20,7 +20,6 @@ export class OtpsService {
     const codeGenerator = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = dayjs().add(createOtpDto.expiresTime, 'second').toDate();
     const numberOfSubmissions = findUser?.numberOfSubmissions || 0 + 1;
-
     if (numberOfSubmissions > 5) {
       throw new BadRequestException({
         message: 'Too many requests try again in 5 min',
@@ -91,14 +90,13 @@ export class OtpsService {
 
   async confirm(confirmOtpDto: ConfirmOtpDto) {
     const findUser = await this.otpRepository.findByUser(confirmOtpDto.user);
-
+    console.log(confirmOtpDto);
     if (!findUser) {
       throw new BadRequestException({
         message: 'User not found',
         status: HttpStatus.BAD_REQUEST,
       });
     }
-
     if (findUser.code !== confirmOtpDto.code) {
       throw new BadRequestException({
         message: 'Invalid code',
@@ -112,7 +110,8 @@ export class OtpsService {
         status: HttpStatus.BAD_REQUEST,
       });
     }
-
-    return true;
+    return {
+      user: findUser.user,
+    };
   }
 }

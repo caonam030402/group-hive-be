@@ -23,6 +23,7 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 // in your project and return an ORM entity directly in response.
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { VerifiedEnum } from '../../../../../statuses/statuses.enum';
 
 @Entity({
   name: 'user',
@@ -63,6 +64,12 @@ export class UserEntity extends EntityRelationalHelper {
   @Column({ default: AuthProvidersEnum.email })
   @Expose({ groups: ['me', 'admin'] })
   provider: string;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @Column({ enum: VerifiedEnum, nullable: true })
+  isVerified?: VerifiedEnum;
 
   @ApiProperty({
     type: String,

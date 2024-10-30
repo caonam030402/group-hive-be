@@ -12,7 +12,7 @@ import bcrypt from 'bcryptjs';
 import { AuthProvidersEnum } from '../auth/auth-providers.enum';
 import { FilesService } from '../files/files.service';
 import { RoleEnum } from '../roles/roles.enum';
-import { StatusEnum } from '../statuses/statuses.enum';
+import { StatusEnum, VerifiedEnum } from '../statuses/statuses.enum';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { DeepPartial } from '../utils/types/deep-partial.type';
 
@@ -38,6 +38,11 @@ export class UsersService {
       const userObject = await this.usersRepository.findByEmail(
         clonedPayload.email,
       );
+
+      if (userObject?.isVerified === VerifiedEnum.Unverified) {
+        return userObject;
+      }
+
       if (userObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,

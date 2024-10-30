@@ -46,7 +46,7 @@ export class OtpRelationalRepository implements OtpRepository {
 
   async findByUser(user: Otp['user']): Promise<NullableType<Otp>> {
     const entity = await this.otpRepository.findOne({
-      where: { user },
+      where: { user: { id: user.id } },
     });
 
     return entity ? OtpMapper.toDomain(entity) : null;

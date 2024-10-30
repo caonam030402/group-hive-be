@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   HttpStatus,
   Injectable,
@@ -26,11 +27,12 @@ import { MailService } from '../mail/mail.service';
 import { RoleEnum } from '../roles/roles.enum';
 import { Session } from '../session/domain/session';
 import { SessionService } from '../session/session.service';
-import { StatusEnum } from '../statuses/statuses.enum';
+import { StatusEnum, VerifiedEnum } from '../statuses/statuses.enum';
 import { User } from '../users/domain/user';
 import { OtpsService } from '../otps/otps.service';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 import { ConfirmOtpDto } from '../otps/dto/confirm-otp';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -209,6 +211,7 @@ export class AuthService {
       },
       firstName: null,
       lastName: null,
+      isVerified: VerifiedEnum.Unverified,
     });
 
     //1. create confirm email otp
@@ -244,6 +247,7 @@ export class AuthService {
 
     return {
       id: user.id,
+      isVerified: user.isVerified,
     };
   }
 
@@ -288,8 +292,49 @@ export class AuthService {
     await this.usersService.update(user.id, user);
   }
 
-  async confirmEmailOtp(confirmEmailOtpDto: ConfirmOtpDto): Promise<void> {
-    await this.otpService.confirm(confirmEmailOtpDto);
+  async confirmEmailOtp(
+    confirmEmailOtpDto: ConfirmOtpDto,
+    response: Response,
+  ): Promise<LoginResponseDto> {
+    const confirmData = await this.otpService.confirm(confirmEmailOtpDto);
+
+    const user: User = confirmData.user;
+
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
+    const session = await this.sessionService.create({
+      user,
+      hash,
+    });
+
+    const {
+      token: jwtToken,
+      refreshToken,
+      tokenExpires,
+    } = await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+      hash,
+    });
+
+    user.status = {
+      id: StatusEnum.active,
+    };
+
+    user.isVerified = VerifiedEnum.Verified;
+
+    const userUpdated = await this.usersService.update(user.id, user);
+
+    return {
+      refreshToken,
+      token: jwtToken,
+      tokenExpires,
+      user: userUpdated as UserEntity,
+    };
   }
 
   async confirmNewEmail(hash: string): Promise<void> {
