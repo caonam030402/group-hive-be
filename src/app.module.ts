@@ -1,30 +1,28 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
-import { FilesModule } from './files/files.module';
-import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { FilesModule } from './modules/files/files.module';
+import { AuthModule } from './modules/auth/auth.module';
 import databaseConfig from './database/config/database.config';
-import authConfig from './auth/config/auth.config';
+import authConfig from './modules/auth/config/auth.config';
 import appConfig from './config/app.config';
-import mailConfig from './mail/config/mail.config';
-import fileConfig from './files/config/file.config';
-import facebookConfig from './auth-facebook/config/facebook.config';
-import googleConfig from './auth-google/config/google.config';
-import appleConfig from './auth-apple/config/apple.config';
+import mailConfig from '././modules/mail/config/mail.config';
+import fileConfig from './modules/files/config/file.config';
+import facebookConfig from './modules/auth-facebook/config/facebook.config';
+import googleConfig from './modules/auth-google/config/google.config';
+import appleConfig from './modules/auth-apple/config/apple.config';
 import path from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthAppleModule } from './auth-apple/auth-apple.module';
-import { AuthFacebookModule } from './auth-facebook/auth-facebook.module';
-import { AuthGoogleModule } from './auth-google/auth-google.module';
+import { AuthAppleModule } from './modules/auth-apple/auth-apple.module';
+import { AuthFacebookModule } from './modules/auth-facebook/auth-facebook.module';
+import { AuthGoogleModule } from './modules/auth-google/auth-google.module';
 import { I18nModule } from 'nestjs-i18n/dist/i18n.module';
 import { HeaderResolver } from 'nestjs-i18n';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
-import { MailModule } from './mail/mail.module';
-import { HomeModule } from './home/home.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
-import { SessionModule } from './session/session.module';
-import { MailerModule } from './mailer/mailer.module';
+import { SessionModule } from './modules/session/session.module';
+import { MailerModule } from './modules/mailer/mailer.module';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -33,10 +31,13 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   },
 });
 
-import { OtpsModule } from './otps/otps.module';
+import { WorkspacesModule } from './modules/workspaces/workspaces.module';
+import { OtpsModule } from './modules/otps/otps.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
+    WorkspacesModule,
     OtpsModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -85,7 +86,6 @@ import { OtpsModule } from './otps/otps.module';
     SessionModule,
     MailModule,
     MailerModule,
-    HomeModule,
   ],
 })
 export class AppModule {}

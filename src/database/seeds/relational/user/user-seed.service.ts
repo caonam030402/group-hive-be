@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import bcrypt from 'bcryptjs';
-import { RoleEnum } from '../../../../roles/roles.enum';
-import { StatusEnum } from '../../../../statuses/statuses.enum';
-import { UserEntity } from '../../../../users/infrastructure/persistence/relational/entities/user.entity';
+import { RoleEnum } from '../../../../modules/roles/roles.enum';
+import { StatusEnum } from '../../../../modules/statuses/statuses.enum';
+import { UserEntity } from '../../../../modules/users/infrastructure/persistence/relational/entities/user.entity';
 
 @Injectable()
 export class UserSeedService {
