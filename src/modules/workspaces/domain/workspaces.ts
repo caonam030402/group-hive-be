@@ -15,10 +15,21 @@ export class Workspaces {
   @ApiProperty({
     type: String,
   })
+  industry: string;
+
+  @ApiProperty({ type: String })
+  size: string;
+
+  @ApiProperty({ type: String })
+  region: string;
+
+  @ApiProperty({
+    type: String || null,
+  })
   avatar: string;
 
   @ApiProperty({
-    type: String,
+    type: String || null,
   })
   description: string;
 

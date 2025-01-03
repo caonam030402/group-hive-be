@@ -5,7 +5,10 @@ import { Workspaces } from '../../domain/workspaces';
 
 export abstract class WorkspacesRepository {
   abstract create(
-    data: Omit<Workspaces, 'id' | 'createdAt' | 'updatedAt'>,
+    data: Omit<
+      Workspaces,
+      'id' | 'createdAt' | 'updatedAt' | 'description' | 'avatar'
+    >,
   ): Promise<Workspaces>;
 
   abstract findAllWithPagination({

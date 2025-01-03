@@ -25,10 +25,22 @@ export class WorkspacesEntity extends EntityRelationalHelper {
 
   @ApiProperty()
   @Column()
-  description: string;
+  industry: string;
 
   @ApiProperty()
   @Column()
+  size: string;
+
+  @ApiProperty()
+  @Column()
+  region: string;
+
+  @ApiProperty()
+  @Column({ nullable: true })
+  description: string;
+
+  @ApiProperty()
+  @Column({ nullable: true })
   avatar: string;
 
   @ApiProperty({
