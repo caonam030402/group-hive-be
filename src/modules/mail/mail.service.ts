@@ -47,6 +47,7 @@ export class MailService {
           infer: true,
         }),
         'src',
+        'modules',
         'mail',
         'mail-templates',
         'activation.hbs',
@@ -68,12 +69,13 @@ export class MailService {
   ): Promise<void> {
     await this.mailerService.sendMail({
       to: mailData.to,
-      subject: '',
+      subject: 'Confirm OTP',
       templatePath: path.join(
         this.configService.getOrThrow('app.workingDirectory', {
           infer: true,
         }),
         'src',
+        'modules',
         'mail',
         'mail-templates',
         'confirm-otp.hbs',
@@ -123,6 +125,7 @@ export class MailService {
           infer: true,
         }),
         'src',
+        'modules',
         'mail',
         'mail-templates',
         'reset-password.hbs',
@@ -174,6 +177,7 @@ export class MailService {
           infer: true,
         }),
         'src',
+        'modules',
         'mail',
         'mail-templates',
         'confirm-new-email.hbs',

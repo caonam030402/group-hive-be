@@ -246,7 +246,7 @@ export class AuthService {
     // });
 
     return {
-      id: user.id,
+      userId: user.id,
       isVerified: user.isVerified,
     };
   }
