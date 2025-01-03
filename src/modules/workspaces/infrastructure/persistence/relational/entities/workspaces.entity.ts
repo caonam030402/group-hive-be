@@ -3,7 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -46,7 +46,7 @@ export class WorkspacesEntity extends EntityRelationalHelper {
   @ApiProperty({
     type: () => UserEntity,
   })
-  @OneToOne(() => UserEntity, {
+  @ManyToOne(() => UserEntity, {
     eager: true,
   })
   @JoinColumn()
