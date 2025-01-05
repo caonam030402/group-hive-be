@@ -14,11 +14,14 @@ export class WorkspacesService {
   }
 
   findAllWithPagination({
+    ownerId,
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
+    ownerId?: number;
   }) {
     return this.workspacesRepository.findAllWithPagination({
+      ownerId,
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,

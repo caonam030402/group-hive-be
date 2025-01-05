@@ -13,8 +13,10 @@ export abstract class WorkspacesRepository {
 
   abstract findAllWithPagination({
     paginationOptions,
+    ownerId,
   }: {
     paginationOptions: IPaginationOptions;
+    ownerId?: number;
   }): Promise<Workspaces[]>;
 
   abstract findById(id: Workspaces['id']): Promise<NullableType<Workspaces>>;

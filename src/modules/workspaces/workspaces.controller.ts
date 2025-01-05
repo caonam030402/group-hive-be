@@ -27,6 +27,8 @@ import {
 } from '../../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../../utils/infinity-pagination';
 import { FindAllWorkspacesDto } from './dto/find-all-workspaces.dto';
+import { CurrentUser } from '../../decorator/current-user.decorator';
+import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 
 @ApiTags('Workspaces')
 @ApiBearerAuth()
@@ -52,6 +54,7 @@ export class WorkspacesController {
   })
   async findAll(
     @Query() query: FindAllWorkspacesDto,
+    @CurrentUser() user: UserEntity,
   ): Promise<InfinityPaginationResponseDto<Workspaces>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
@@ -61,6 +64,7 @@ export class WorkspacesController {
 
     return infinityPagination(
       await this.workspacesService.findAllWithPagination({
+        ownerId: user.id,
         paginationOptions: {
           page,
           limit,

@@ -25,12 +25,19 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
 
   async findAllWithPagination({
     paginationOptions,
+    ownerId,
   }: {
     paginationOptions: IPaginationOptions;
+    ownerId: number;
   }): Promise<Workspaces[]> {
     const entities = await this.workspacesRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: {
+        owner: {
+          id: ownerId,
+        },
+      },
     });
 
     return entities.map((entity) => WorkspacesMapper.toDomain(entity));
