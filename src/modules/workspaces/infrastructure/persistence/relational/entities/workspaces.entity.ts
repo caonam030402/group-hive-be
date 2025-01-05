@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,6 +11,7 @@ import {
 import { EntityRelationalHelper } from '../../../../../../utils/relational-entity-helper';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
+import { generateAvatar } from '../../../../../../utils/avatart-default';
 
 @Entity({
   name: 'workspaces',
@@ -59,4 +61,11 @@ export class WorkspacesEntity extends EntityRelationalHelper {
   @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  setDefaultAvatar() {
+    if (!this.avatar) {
+      this.avatar = generateAvatar({ name: this.name });
+    }
+  }
 }

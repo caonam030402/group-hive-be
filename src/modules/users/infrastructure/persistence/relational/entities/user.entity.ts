@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
   JoinColumn,
   OneToOne,
+  BeforeInsert,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -24,6 +25,7 @@ import { EntityRelationalHelper } from '../../../../../../utils/relational-entit
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { VerifiedEnum } from '../../../../../statuses/statuses.enum';
+import { generateAvatar } from '../../../../../../utils/avatart-default';
 
 @Entity({
   name: 'user',
@@ -70,6 +72,12 @@ export class UserEntity extends EntityRelationalHelper {
   })
   @Column({ enum: VerifiedEnum, nullable: true })
   isVerified?: VerifiedEnum;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column({ enum: VerifiedEnum, nullable: true })
+  avatar?: string;
 
   @ApiProperty({
     type: String,
@@ -132,4 +140,11 @@ export class UserEntity extends EntityRelationalHelper {
   @ApiProperty()
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @BeforeInsert()
+  setDefaultAvatar() {
+    if (!this.avatar) {
+      this.avatar = generateAvatar({ email: this.email || '' });
+    }
+  }
 }
