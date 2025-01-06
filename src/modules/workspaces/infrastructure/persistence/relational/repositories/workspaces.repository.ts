@@ -23,6 +23,14 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
     return WorkspacesMapper.toDomain(newEntity);
   }
 
+  async count(ownerId: number): Promise<number> {
+    const count = await this.workspacesRepository
+      .createQueryBuilder('workspaces')
+      .where('workspaces.ownerId = :id', { id: ownerId })
+      .getCount();
+    return count;
+  }
+
   async findAllWithPagination({
     paginationOptions,
     ownerId,

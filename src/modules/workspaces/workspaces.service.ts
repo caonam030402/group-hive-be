@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateWorkspacesDto } from './dto/create-workspaces.dto';
 import { UpdateWorkspacesDto } from './dto/update-workspaces.dto';
 import { WorkspacesRepository } from './infrastructure/persistence/workspaces.repository';
@@ -9,7 +13,22 @@ import { Workspaces } from './domain/workspaces';
 export class WorkspacesService {
   constructor(private readonly workspacesRepository: WorkspacesRepository) {}
 
-  create(createWorkspacesDto: CreateWorkspacesDto) {
+  async create({
+    createWorkspacesDto,
+    ownerId,
+  }: {
+    createWorkspacesDto: CreateWorkspacesDto;
+    ownerId: number;
+  }) {
+    const maxCount = 5;
+    const count = await this.workspacesRepository.count(ownerId);
+
+    if (count > maxCount) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: `You can only create ${maxCount} workspaces`,
+      });
+    }
     return this.workspacesRepository.create(createWorkspacesDto);
   }
 

@@ -44,8 +44,14 @@ export class WorkspacesController {
   @ApiCreatedResponse({
     type: Workspaces,
   })
-  create(@Body() createWorkspacesDto: CreateWorkspacesDto) {
-    return this.workspacesService.create(createWorkspacesDto);
+  create(
+    @Body() createWorkspacesDto: CreateWorkspacesDto,
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.workspacesService.create({
+      createWorkspacesDto,
+      ownerId: user.id,
+    });
   }
 
   @Get()
