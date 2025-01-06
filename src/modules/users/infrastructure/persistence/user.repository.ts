@@ -9,7 +9,7 @@ export abstract class UserRepository {
   abstract create(
     data: Omit<
       User,
-      'id' | 'createdAt' | 'deletedAt' | 'updatedAt' | 'isVerified'
+      'id' | 'createdAt' | 'deletedAt' | 'updatedAt' | 'isVerified' | 'avatar'
     >,
   ): Promise<User>;
 

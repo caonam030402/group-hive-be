@@ -13,11 +13,11 @@ export class User {
   })
   id: number | string;
 
+  // @Expose({ groups: ['me', 'admin'] })
   @ApiProperty({
     type: String,
     example: 'john.doe@example.com',
   })
-  @Expose({ groups: ['me', 'admin'] })
   email: string | null;
 
   @Exclude({ toPlainOnly: true })
@@ -56,6 +56,12 @@ export class User {
     type: () => FileType,
   })
   photo?: FileType | null;
+
+  @ApiProperty({
+    type: String,
+    example: '',
+  })
+  avatar: string;
 
   @ApiProperty({
     type: () => Role,
