@@ -22,6 +22,17 @@ export class WorkspacesService {
   }) {
     const maxCount = 5;
     const count = await this.workspacesRepository.count(ownerId);
+    const listWorkspace = await this.workspacesRepository.findByOwnerId({
+      name: createWorkspacesDto.name,
+      ownerId,
+    });
+
+    if (listWorkspace) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: `This name has been duplicated`,
+      });
+    }
 
     if (count > maxCount) {
       throw new UnprocessableEntityException({
@@ -29,6 +40,7 @@ export class WorkspacesService {
         errors: `You can only create ${maxCount} workspaces`,
       });
     }
+
     return this.workspacesRepository.create(createWorkspacesDto);
   }
 

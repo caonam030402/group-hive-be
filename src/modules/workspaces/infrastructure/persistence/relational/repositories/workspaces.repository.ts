@@ -51,6 +51,25 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
     return entities.map((entity) => WorkspacesMapper.toDomain(entity));
   }
 
+  async findByOwnerId({
+    ownerId,
+    name,
+  }: {
+    ownerId: number;
+    name: string;
+  }): Promise<NullableType<Workspaces>> {
+    const entity = await this.workspacesRepository.findOne({
+      relations: ['owner'],
+      where: {
+        name: name,
+        owner: {
+          id: ownerId,
+        },
+      },
+    });
+    return entity;
+  }
+
   async findById(id: Workspaces['id']): Promise<NullableType<Workspaces>> {
     const entity = await this.workspacesRepository.findOne({
       where: { id },

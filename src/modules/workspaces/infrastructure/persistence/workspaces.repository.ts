@@ -23,6 +23,14 @@ export abstract class WorkspacesRepository {
 
   abstract count(ownerId: number): Promise<number>;
 
+  abstract findByOwnerId({
+    ownerId,
+    name,
+  }: {
+    ownerId: number;
+    name: string;
+  }): Promise<NullableType<Workspaces>>;
+
   abstract update(
     id: Workspaces['id'],
     payload: DeepPartial<Workspaces>,
