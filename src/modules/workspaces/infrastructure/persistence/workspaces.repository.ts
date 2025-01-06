@@ -7,7 +7,7 @@ export abstract class WorkspacesRepository {
   abstract create(
     data: Omit<
       Workspaces,
-      'id' | 'createdAt' | 'updatedAt' | 'description' | 'avatar'
+      'id' | 'createdAt' | 'updatedAt' | 'description' | 'avatar' | 'members'
     >,
   ): Promise<Workspaces>;
 
@@ -20,6 +20,16 @@ export abstract class WorkspacesRepository {
   }): Promise<Workspaces[]>;
 
   abstract findById(id: Workspaces['id']): Promise<NullableType<Workspaces>>;
+
+  abstract count(ownerId: number): Promise<number>;
+
+  abstract findByOwnerId({
+    ownerId,
+    name,
+  }: {
+    ownerId: number;
+    name: string;
+  }): Promise<NullableType<Workspaces>>;
 
   abstract update(
     id: Workspaces['id'],

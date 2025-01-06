@@ -4,6 +4,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -54,6 +56,15 @@ export class WorkspacesEntity extends EntityRelationalHelper {
   @JoinColumn()
   owner: UserEntity;
 
+  @ApiProperty({
+    type: () => [UserEntity],
+  })
+  @ManyToMany(() => UserEntity, {
+    eager: true,
+  })
+  @JoinTable({ name: 'user_workspace' })
+  members: UserEntity[];
+
   @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
@@ -63,7 +74,7 @@ export class WorkspacesEntity extends EntityRelationalHelper {
   updatedAt: Date;
 
   @BeforeInsert()
-  setDefaultAvatar() {
+  public setDefaultAvatar() {
     if (!this.avatar) {
       this.avatar = generateAvatar({ name: this.name });
     }

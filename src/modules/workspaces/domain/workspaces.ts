@@ -38,6 +38,11 @@ export class Workspaces {
   })
   owner: UserEntity;
 
+  @ApiProperty({
+    type: [UserEntity],
+  })
+  members: UserEntity[];
+
   @ApiProperty()
   createdAt: Date;
 

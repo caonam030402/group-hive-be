@@ -77,7 +77,7 @@ export class UserEntity extends EntityRelationalHelper {
     type: String,
   })
   @Column({ enum: VerifiedEnum, nullable: true })
-  avatar?: string;
+  avatar: string;
 
   @ApiProperty({
     type: String,

@@ -23,6 +23,14 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
     return WorkspacesMapper.toDomain(newEntity);
   }
 
+  async count(ownerId: number): Promise<number> {
+    const count = await this.workspacesRepository
+      .createQueryBuilder('workspaces')
+      .where('workspaces.ownerId = :id', { id: ownerId })
+      .getCount();
+    return count;
+  }
+
   async findAllWithPagination({
     paginationOptions,
     ownerId,
@@ -41,6 +49,25 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
     });
 
     return entities.map((entity) => WorkspacesMapper.toDomain(entity));
+  }
+
+  async findByOwnerId({
+    ownerId,
+    name,
+  }: {
+    ownerId: number;
+    name: string;
+  }): Promise<NullableType<Workspaces>> {
+    const entity = await this.workspacesRepository.findOne({
+      relations: ['owner'],
+      where: {
+        name: name,
+        owner: {
+          id: ownerId,
+        },
+      },
+    });
+    return entity;
   }
 
   async findById(id: Workspaces['id']): Promise<NullableType<Workspaces>> {
