@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateInit1736135840382 implements MigrationInterface {
-  name = 'CreateInit1736135840382';
+export class CreateInit1736149475403 implements MigrationInterface {
+  name = 'CreateInit1736149475403';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -38,6 +38,15 @@ export class CreateInit1736135840382 implements MigrationInterface {
       `CREATE INDEX "IDX_3d2f174ef04fb312fdebd0ddc5" ON "session" ("userId") `,
     );
     await queryRunner.query(
+      `CREATE TABLE "user_workspace" ("workspacesId" uuid NOT NULL, "userId" integer NOT NULL, CONSTRAINT "PK_b13c6d31b2002d8606106c44bde" PRIMARY KEY ("workspacesId", "userId"))`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_0f463ff0b11dff7d77e287db2b" ON "user_workspace" ("workspacesId") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_4ea12fabb12c08c3dc8839d093" ON "user_workspace" ("userId") `,
+    );
+    await queryRunner.query(
       `ALTER TABLE "user" ADD CONSTRAINT "FK_75e2be4ce11d447ef43be0e374f" FOREIGN KEY ("photoId") REFERENCES "file"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -55,9 +64,21 @@ export class CreateInit1736135840382 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "session" ADD CONSTRAINT "FK_3d2f174ef04fb312fdebd0ddc53" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "user_workspace" ADD CONSTRAINT "FK_0f463ff0b11dff7d77e287db2bf" FOREIGN KEY ("workspacesId") REFERENCES "workspaces"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "user_workspace" ADD CONSTRAINT "FK_4ea12fabb12c08c3dc8839d0932" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "user_workspace" DROP CONSTRAINT "FK_4ea12fabb12c08c3dc8839d0932"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "user_workspace" DROP CONSTRAINT "FK_0f463ff0b11dff7d77e287db2bf"`,
+    );
     await queryRunner.query(
       `ALTER TABLE "session" DROP CONSTRAINT "FK_3d2f174ef04fb312fdebd0ddc53"`,
     );
@@ -76,6 +97,13 @@ export class CreateInit1736135840382 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "user" DROP CONSTRAINT "FK_75e2be4ce11d447ef43be0e374f"`,
     );
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_4ea12fabb12c08c3dc8839d093"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_0f463ff0b11dff7d77e287db2b"`,
+    );
+    await queryRunner.query(`DROP TABLE "user_workspace"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_3d2f174ef04fb312fdebd0ddc5"`,
     );

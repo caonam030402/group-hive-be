@@ -12,6 +12,7 @@ export class WorkspacesMapper {
     domainEntity.owner = raw.owner;
     domainEntity.size = raw.size;
     domainEntity.region = raw.region;
+    domainEntity.members = raw.members;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -30,6 +31,7 @@ export class WorkspacesMapper {
     persistenceEntity.size = domainEntity.size;
     persistenceEntity.region = domainEntity.region;
     persistenceEntity.description = domainEntity?.description;
+    persistenceEntity.members = domainEntity.members;
     persistenceEntity.avatar = domainEntity?.avatar;
     persistenceEntity.owner = domainEntity.owner;
 
