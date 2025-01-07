@@ -6,18 +6,18 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   BaseWsExceptionFilter,
+  MessageBody,
   SubscribeMessage,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { ConnectedUserService } from './service/connected-user.service';
 import { CurrentUser } from '../../decorator/current-user.decorator';
 import { User } from '../users/domain/user';
-import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
-import { WebSocketJwtAuthGuard } from '../../common/guard/jwt-ws.guard';
+import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
 
+@UseGuards(WsAuthGuard)
 @UseFilters(BaseWsExceptionFilter)
-@UseGuards(WebSocketJwtAuthGuard)
-@WebSocketGateway(4800, { cors: { origin: '*' } })
+@WebSocketGateway(3001, { cors: { origin: '*' } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private readonly logger = new Logger('ChatGateway');
@@ -30,28 +30,25 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+  @UseGuards(WsAuthGuard)
   @SubscribeMessage('connection')
-  async handleConnection(socket: Socket, @CurrentUser() user: UserEntity) {
-    console.log('Socket connected:', socket.id);
+  handleConnection(socket: Socket, @CurrentUser() user: User) {
     try {
       if (!user) {
-        console.log('No user found');
         return;
       }
 
-      console.log('Creating connected user');
-      await this.connectedUserService.create({
-        socketId: Number(socket.id),
-        user: user,
-      });
+      // await this.connectedUserService.create({
+      //   socketId: Number(socket.id),
+      //   user: user,
+      // });
     } catch (error) {
-      console.error('Connection error:', error);
       this.handleConnectionError(socket, error);
     }
   }
 
-  async handleDisconnect(socket: Socket): Promise<void> {
-    await this.connectedUserService.delete(Number(socket.id));
+  handleDisconnect(socket: Socket) {
+    // await this.connectedUserService.delete(Number(socket.id));
     this.logger.log(`Client disconnected: ${socket.id}`);
   }
 
@@ -59,5 +56,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.logger.error(error);
     socket.emit('error', error.message);
     socket.disconnect();
+  }
+
+  @SubscribeMessage('message')
+  handleEvent(socket: Socket, @MessageBody() data: any): any {
+    return data;
   }
 }
