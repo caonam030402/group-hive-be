@@ -1,31 +1,35 @@
-import { Strategy } from 'passport-jwt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadType } from './types/jwt-payload.type';
 import { AllConfigType } from '../../../config/config.type';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class JwtWsStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(configService: ConfigService<AllConfigType>) {
-    super({
-      jwtFromRequest: (req) => {
-        const token = req.handshake.headers['authorization'];
-        if (token) {
-          return token.split(' ')[1];
-        }
+export class JwtWsStrategy {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService<AllConfigType>,
+  ) {}
 
-        throw new UnauthorizedException('No authorization token found');
-      },
-      secretOrKey: configService.get('auth.secret', { infer: true }),
-    });
-  }
+  async validateJwtToken(
+    token: string | undefined,
+  ): Promise<JwtPayloadType | null> {
+    try {
+      const payload = await this.jwtService.verifyAsync(token ?? '', {
+        secret: this.configService.get('auth.secret', { infer: true }),
+      });
 
-  public validate(payload: JwtPayloadType) {
-    if (!payload.id) {
-      throw new UnauthorizedException();
+      if (!payload || !payload.id) {
+        // throw new UnauthorizedException('Invalid token');
+        return null;
+      }
+
+      return payload;
+    } catch (error) {
+      console.error(error);
+      // throw new UnauthorizedException('Invalid token');
+      console.error('Error validating JWT:', error);
+      return null;
     }
-
-    return payload;
   }
 }

@@ -14,6 +14,7 @@ import { ConnectedUserService } from './service/connected-user.service';
 import { CurrentUser } from '../../decorator/current-user.decorator';
 import { User } from '../users/domain/user';
 import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
+import { JwtWsStrategy } from '../auth/strategies/jwt-ws.strategy';
 
 @UseGuards(WsAuthGuard)
 @UseFilters(BaseWsExceptionFilter)
@@ -22,7 +23,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private readonly logger = new Logger('ChatGateway');
 
-  constructor(private readonly connectedUserService: ConnectedUserService) {}
+  constructor(
+    private readonly connectedUserService: ConnectedUserService,
+    private readonly jwtWsStrategy: JwtWsStrategy,
+  ) {}
 
   async onModuleInit(@CurrentUser() user: User): Promise<void> {
     if (user) {
@@ -30,10 +34,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @UseGuards(WsAuthGuard)
   @SubscribeMessage('connection')
-  handleConnection(socket: Socket, @CurrentUser() user: User) {
+  async handleConnection(socket: Socket) {
     try {
+      const token = socket.handshake.headers['authorization'];
+      const user = await this.jwtWsStrategy.validateJwtToken(token);
       if (!user) {
         return;
       }
@@ -59,7 +64,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('message')
-  handleEvent(socket: Socket, @MessageBody() data: any): any {
+  handleEvent(@MessageBody() data: any): any {
     return data;
   }
 }

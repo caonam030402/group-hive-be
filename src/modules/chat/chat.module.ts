@@ -4,9 +4,10 @@ import { RelationalChatPersistenceModule } from './infrastructure/persistence/re
 import { chatService } from './service/chat.service';
 import { ChatGateway } from './chat.gateway';
 import { ConnectedUserService } from './service/connected-user.service';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [RelationalChatPersistenceModule],
+  imports: [RelationalChatPersistenceModule, AuthModule],
   controllers: [chatController],
   providers: [chatService, ChatGateway, ConnectedUserService],
   exports: [chatService, RelationalChatPersistenceModule],

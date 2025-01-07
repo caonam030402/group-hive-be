@@ -1,25 +1,32 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { Observable } from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
+import { JwtWsStrategy } from '../../modules/auth/strategies/jwt-ws.strategy';
 
 @Injectable()
-export class WsAuthGuard extends AuthGuard('jwt') {
-  canActivate(context: any): boolean | Promise<boolean> | Observable<boolean> {
-    return super.canActivate(context);
-  }
+export class WsAuthGuard implements CanActivate {
+  constructor(private readonly jwtWsStrategy: JwtWsStrategy) {}
 
-  handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const wsContext = context.switchToWs();
     const client = wsContext.getClient();
-    if (err || !user) {
-      throw err || new UnauthorizedException();
+    const token = client.handshake.headers['authorization'];
+
+    if (!token) {
+      throw new UnauthorizedException('Authorization token is missing');
     }
 
-    client.user = user;
-    return user;
+    try {
+      const user = await this.jwtWsStrategy.validateJwtToken(token);
+      if (user) {
+        client['user'] = user;
+        return true;
+      } else {
+        throw new UnauthorizedException('Invalid token');
+      }
+    } catch (error) {
+      console.error(error);
+      throw new UnauthorizedException('Token validation failed');
+    }
   }
 }
