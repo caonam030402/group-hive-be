@@ -15,8 +15,10 @@ export class ConnectedUserService {
   delete(socketId: connectedUser['socketId']): Promise<void> {
     return this.connectedUserRepository.delete(socketId);
   }
-
-  create({ socketId, user }: Omit<connectedUser, 'createdAt' | 'updatedAt'>) {
-    return this.connectedUserRepository.create({ socketId, user });
+  create({ socketId, user }: Pick<connectedUser, 'socketId' | 'user'>) {
+    return this.connectedUserRepository.create({
+      socketId,
+      user,
+    });
   }
 }

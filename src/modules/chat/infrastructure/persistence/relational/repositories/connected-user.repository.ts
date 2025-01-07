@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { chatEntity } from '../entities/chat.entity';
 
 import { connectedUserRepository } from '../../connected.repository';
 import { connectedUserEntity } from '../entities/connected-user.entity';
@@ -13,7 +12,7 @@ export class ConnectedUserRelationalRepository
   implements connectedUserRepository
 {
   constructor(
-    @InjectRepository(chatEntity)
+    @InjectRepository(connectedUserEntity)
     private readonly connectedUserRepository: Repository<connectedUserEntity>,
   ) {}
 
@@ -25,9 +24,12 @@ export class ConnectedUserRelationalRepository
     });
   }
 
-  async create(data: connectedUser): Promise<void> {
+  async create(data: connectedUser): Promise<connectedUser> {
     const persistenceModel = connectedUserMapper.toPersistence(data);
-    await this.connectedUserRepository.save(persistenceModel);
+    const newEntity = await this.connectedUserRepository.save(
+      this.connectedUserRepository.create(persistenceModel),
+    );
+    return connectedUserMapper.toDomain(newEntity);
   }
 
   async delete(socketId: connectedUser['socketId']): Promise<void> {

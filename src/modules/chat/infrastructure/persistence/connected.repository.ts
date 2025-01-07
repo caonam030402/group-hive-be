@@ -5,7 +5,7 @@ export abstract class connectedUserRepository {
 
   abstract create(
     data: Omit<connectedUser, 'createdAt' | 'updatedAt'>,
-  ): Promise<void>;
+  ): Promise<connectedUser>;
 
   abstract delete(socketId: connectedUser['socketId']): Promise<void>;
 }

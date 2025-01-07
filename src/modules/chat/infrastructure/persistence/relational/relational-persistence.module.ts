@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { chatEntity } from './entities/chat.entity';
 import { connectedUserRepository } from '../connected.repository';
 import { ConnectedUserRelationalRepository } from './repositories/connected-user.repository';
+import { connectedUserEntity } from './entities/connected-user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([chatEntity])],
+  imports: [TypeOrmModule.forFeature([chatEntity, connectedUserEntity])],
   providers: [
     {
       provide: chatRepository,

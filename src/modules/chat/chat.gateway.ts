@@ -15,6 +15,7 @@ import { CurrentUser } from '../../decorator/current-user.decorator';
 import { User } from '../users/domain/user';
 import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
 import { JwtWsStrategy } from '../auth/strategies/jwt-ws.strategy';
+import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 
 @UseGuards(WsAuthGuard)
 @UseFilters(BaseWsExceptionFilter)
@@ -39,21 +40,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const token = socket.handshake.headers['authorization'];
       const user = await this.jwtWsStrategy.validateJwtToken(token);
-      if (!user) {
-        return;
-      }
-
-      // await this.connectedUserService.create({
-      //   socketId: Number(socket.id),
-      //   user: user,
-      // });
+      if (!user) return socket.disconnect();
+      await this.connectedUserService.create({
+        socketId: socket.id,
+        user: {
+          id: user?.id,
+        } as UserEntity,
+      });
     } catch (error) {
       this.handleConnectionError(socket, error);
     }
   }
 
-  handleDisconnect(socket: Socket) {
-    // await this.connectedUserService.delete(Number(socket.id));
+  async handleDisconnect(socket: Socket) {
+    await this.connectedUserService.delete(socket.id);
     this.logger.log(`Client disconnected: ${socket.id}`);
   }
 

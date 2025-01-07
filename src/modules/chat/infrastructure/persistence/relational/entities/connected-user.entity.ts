@@ -30,7 +30,7 @@ export class connectedUserEntity extends EntityRelationalHelper {
 
   @ApiProperty()
   @Column()
-  socketId: number;
+  socketId: string;
 
   @CreateDateColumn()
   createdAt: Date;

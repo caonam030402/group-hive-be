@@ -8,7 +8,6 @@ export class connectedUserMapper {
     domainEntity.socketId = raw.socketId;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
-    domainEntity.user = raw.user;
 
     return domainEntity;
   }
@@ -19,7 +18,6 @@ export class connectedUserMapper {
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
     persistenceEntity.user = domainEntity.user;
-
     return persistenceEntity;
   }
 }
