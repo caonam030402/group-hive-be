@@ -6,6 +6,7 @@ import { FileConfig } from '../modules/files/config/file-config.type';
 import { AppleConfig } from '../modules/auth-apple/config/apple-config.type';
 import { GoogleConfig } from '../modules/auth-google/config/google-config.type';
 import { MailConfig } from '../modules/mail/config/mail-config.type';
+import { RedisConfig } from '../redis/config/redis-config.type';
 
 export type AllConfigType = {
   app: AppConfig;
@@ -16,4 +17,5 @@ export type AllConfigType = {
   file: FileConfig;
   google: GoogleConfig;
   mail: MailConfig;
+  redis: RedisConfig;
 };

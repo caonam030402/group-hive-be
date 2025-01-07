@@ -23,6 +23,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { SessionModule } from './modules/session/session.module';
 import { MailerModule } from './modules/mailer/mailer.module';
+import redisConfig from './redis/config/redis.config';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -52,6 +53,7 @@ import { chatModule } from './modules/chat/chat.module';
         facebookConfig,
         googleConfig,
         appleConfig,
+        redisConfig,
       ],
       envFilePath: ['.env'],
     }),
