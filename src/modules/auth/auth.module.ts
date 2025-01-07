@@ -10,6 +10,7 @@ import { MailModule } from '../mail/mail.module';
 import { SessionModule } from '../session/session.module';
 import { UsersModule } from '../users/users.module';
 import { OtpsModule } from '../otps/otps.module';
+import { JwtWsStrategy } from './strategies/jwt-ws.strategy';
 
 @Module({
   imports: [
@@ -21,7 +22,13 @@ import { OtpsModule } from '../otps/otps.module';
     OtpsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, AnonymousStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    AnonymousStrategy,
+    JwtWsStrategy,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}
