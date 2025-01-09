@@ -7,7 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '../../users/infrastructure/persistence/relational/entities/user.entity';
+import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { GroupEntity } from './group.entity';
 import { ChatEntity } from './chat.entity';
 import { ApiProperty } from '@nestjs/swagger';

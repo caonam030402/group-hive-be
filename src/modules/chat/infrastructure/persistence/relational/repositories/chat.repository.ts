@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { chatEntity } from '../entities/chat.entity';
+import { ChatEntity } from '../entities/chat.entity';
 import { ChatRepository } from '../../chat.repository';
 import { ChatMapper } from '../mappers/chat.mapper';
 import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
@@ -11,8 +11,8 @@ import { Chat } from '../../../../domain/chat';
 @Injectable()
 export class ChatRelationalRepository implements ChatRepository {
   constructor(
-    @InjectRepository(chatEntity)
-    private readonly chatRepository: Repository<chatEntity>,
+    @InjectRepository(ChatEntity)
+    private readonly chatRepository: Repository<ChatEntity>,
   ) {}
 
   async create(data: Chat): Promise<Chat> {

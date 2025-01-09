@@ -1,8 +1,8 @@
 import { Chat } from '../../../../domain/chat';
-import { chatEntity } from '../entities/chat.entity';
+import { ChatEntity } from '../entities';
 
 export class ChatMapper {
-  static toDomain(raw: chatEntity): Chat {
+  static toDomain(raw: ChatEntity): Chat {
     const domainEntity = new Chat();
     domainEntity.id = raw.id;
     domainEntity.createdAt = raw.createdAt;
@@ -11,8 +11,8 @@ export class ChatMapper {
     return domainEntity;
   }
 
-  static toPersistence(domainEntity: Chat): chatEntity {
-    const persistenceEntity = new chatEntity();
+  static toPersistence(domainEntity: Chat): ChatEntity {
+    const persistenceEntity = new ChatEntity();
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;
     }

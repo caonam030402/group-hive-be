@@ -1,19 +1,33 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
+  Index,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { EntityRelationalHelper } from '../../../../../../utils/relational-entity-helper';
+import { MessageEntity } from './message.entity';
+import { UserChatEntity } from './user-chat.entity';
 
-@Entity({
-  name: 'chat',
-})
-export class chatEntity extends EntityRelationalHelper {
-  @ApiProperty()
+@Entity('chats')
+export class ChatEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty()
+  @Index()
+  @Column({ type: 'varchar' })
+  name: string;
+
+  @ApiProperty()
+  @OneToMany(() => MessageEntity, (message) => message.chat)
+  messages: MessageEntity[];
+
+  @ApiProperty()
+  @OneToMany(() => UserChatEntity, (userChat) => userChat.chat)
+  userChats: UserChatEntity[];
 
   @ApiProperty()
   @CreateDateColumn()

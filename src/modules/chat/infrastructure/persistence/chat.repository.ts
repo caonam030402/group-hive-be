@@ -5,7 +5,10 @@ import { Chat } from '../../domain/chat';
 
 export abstract class ChatRepository {
   abstract create(
-    data: Omit<Chat, 'id' | 'createdAt' | 'updatedAt'>,
+    data: Omit<
+      Chat,
+      'id' | 'createdAt' | 'updatedAt' | 'name' | 'messages' | 'userChats'
+    >,
   ): Promise<Chat>;
 
   abstract findAllWithPagination({

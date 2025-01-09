@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class InitDB1736410054731 implements MigrationInterface {
-  name = 'InitDB1736410054731';
+export class InitDB1736411323692 implements MigrationInterface {
+  name = 'InitDB1736411323692';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -26,7 +26,22 @@ export class InitDB1736410054731 implements MigrationInterface {
       `CREATE INDEX "IDX_f0e1b4ecdca13b177e2e3a0613" ON "user" ("lastName") `,
     );
     await queryRunner.query(
+      `CREATE TABLE "workspaces" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "industry" character varying NOT NULL, "size" character varying NOT NULL, "region" character varying NOT NULL, "description" character varying, "avatar" character varying, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "ownerId" integer, CONSTRAINT "PK_098656ae401f3e1a4586f47fd8e" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "session" ("id" SERIAL NOT NULL, "hash" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "userId" integer, CONSTRAINT "PK_f55da76ac1c3ac420f444d2ff11" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_3d2f174ef04fb312fdebd0ddc5" ON "session" ("userId") `,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "otp" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "code" integer, "expiresTime" integer NOT NULL, "expiresAt" TIMESTAMP, "numberOfSubmissions" integer, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer, CONSTRAINT "REL_db724db1bc3d94ad5ba3851843" UNIQUE ("userId"), CONSTRAINT "PK_32556d9d7b22031d7d0e1fd6723" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
       `CREATE TABLE "groups" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, CONSTRAINT "PK_659d1483316afb28afd3a90646e" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "users_groups" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "userId" integer, "groupId" uuid, CONSTRAINT "PK_4644edf515e3c0b88e988522588" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "messages" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "type" "public"."messages_type_enum" NOT NULL, "content" character varying NOT NULL, "status" "public"."messages_status_enum" NOT NULL DEFAULT 'sent', "sentAt" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer, "groupId" uuid, "chatId" uuid, CONSTRAINT "PK_18325f38ae6de43878487eff986" PRIMARY KEY ("id"))`,
@@ -68,25 +83,7 @@ export class InitDB1736410054731 implements MigrationInterface {
       `CREATE INDEX "IDX_2ce81392a18ec27a31a01aa781" ON "users_chats" ("userId", "lastReadAt") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "users_groups" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "userId" integer, "groupId" uuid, CONSTRAINT "PK_4644edf515e3c0b88e988522588" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "workspaces" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "industry" character varying NOT NULL, "size" character varying NOT NULL, "region" character varying NOT NULL, "description" character varying, "avatar" character varying, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "ownerId" integer, CONSTRAINT "PK_098656ae401f3e1a4586f47fd8e" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "session" ("id" SERIAL NOT NULL, "hash" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "userId" integer, CONSTRAINT "PK_f55da76ac1c3ac420f444d2ff11" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_3d2f174ef04fb312fdebd0ddc5" ON "session" ("userId") `,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "otp" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "code" integer, "expiresTime" integer NOT NULL, "expiresAt" TIMESTAMP, "numberOfSubmissions" integer, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer, CONSTRAINT "REL_db724db1bc3d94ad5ba3851843" UNIQUE ("userId"), CONSTRAINT "PK_32556d9d7b22031d7d0e1fd6723" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
       `CREATE TABLE "connectedUser" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "socketId" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer, CONSTRAINT "REL_f7b787b4f9a3bcc33570a91754" UNIQUE ("userId"), CONSTRAINT "PK_1f3f4831add6fa13c0452027567" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "chat" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_9d0b2ba74336710fd31154738a5" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "user_workspace" ("workspacesId" uuid NOT NULL, "userId" integer NOT NULL, CONSTRAINT "PK_b13c6d31b2002d8606106c44bde" PRIMARY KEY ("workspacesId", "userId"))`,
@@ -107,6 +104,21 @@ export class InitDB1736410054731 implements MigrationInterface {
       `ALTER TABLE "user" ADD CONSTRAINT "FK_dc18daa696860586ba4667a9d31" FOREIGN KEY ("statusId") REFERENCES "status"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE "workspaces" ADD CONSTRAINT "FK_77607c5b6af821ec294d33aab0c" FOREIGN KEY ("ownerId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "session" ADD CONSTRAINT "FK_3d2f174ef04fb312fdebd0ddc53" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "otp" ADD CONSTRAINT "FK_db724db1bc3d94ad5ba38518433" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "users_groups" ADD CONSTRAINT "FK_682de41e20f223092c7353974b7" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "users_groups" ADD CONSTRAINT "FK_71c149feea5a44f7ff77a10d463" FOREIGN KEY ("groupId") REFERENCES "groups"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "messages" ADD CONSTRAINT "FK_4838cd4fc48a6ff2d4aa01aa646" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -120,21 +132,6 @@ export class InitDB1736410054731 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "users_chats" ADD CONSTRAINT "FK_bf986dc7900663ca73ab6425300" FOREIGN KEY ("chatId") REFERENCES "chats"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "users_groups" ADD CONSTRAINT "FK_682de41e20f223092c7353974b7" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "users_groups" ADD CONSTRAINT "FK_71c149feea5a44f7ff77a10d463" FOREIGN KEY ("groupId") REFERENCES "groups"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "workspaces" ADD CONSTRAINT "FK_77607c5b6af821ec294d33aab0c" FOREIGN KEY ("ownerId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "session" ADD CONSTRAINT "FK_3d2f174ef04fb312fdebd0ddc53" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "otp" ADD CONSTRAINT "FK_db724db1bc3d94ad5ba38518433" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "connectedUser" ADD CONSTRAINT "FK_f7b787b4f9a3bcc33570a91754b" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -158,21 +155,6 @@ export class InitDB1736410054731 implements MigrationInterface {
       `ALTER TABLE "connectedUser" DROP CONSTRAINT "FK_f7b787b4f9a3bcc33570a91754b"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "otp" DROP CONSTRAINT "FK_db724db1bc3d94ad5ba38518433"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "session" DROP CONSTRAINT "FK_3d2f174ef04fb312fdebd0ddc53"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "workspaces" DROP CONSTRAINT "FK_77607c5b6af821ec294d33aab0c"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "users_groups" DROP CONSTRAINT "FK_71c149feea5a44f7ff77a10d463"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "users_groups" DROP CONSTRAINT "FK_682de41e20f223092c7353974b7"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "users_chats" DROP CONSTRAINT "FK_bf986dc7900663ca73ab6425300"`,
     );
     await queryRunner.query(
@@ -186,6 +168,21 @@ export class InitDB1736410054731 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "messages" DROP CONSTRAINT "FK_4838cd4fc48a6ff2d4aa01aa646"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "users_groups" DROP CONSTRAINT "FK_71c149feea5a44f7ff77a10d463"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "users_groups" DROP CONSTRAINT "FK_682de41e20f223092c7353974b7"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "otp" DROP CONSTRAINT "FK_db724db1bc3d94ad5ba38518433"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "session" DROP CONSTRAINT "FK_3d2f174ef04fb312fdebd0ddc53"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "workspaces" DROP CONSTRAINT "FK_77607c5b6af821ec294d33aab0c"`,
     );
     await queryRunner.query(
       `ALTER TABLE "user" DROP CONSTRAINT "FK_dc18daa696860586ba4667a9d31"`,
@@ -203,15 +200,7 @@ export class InitDB1736410054731 implements MigrationInterface {
       `DROP INDEX "public"."IDX_0f463ff0b11dff7d77e287db2b"`,
     );
     await queryRunner.query(`DROP TABLE "user_workspace"`);
-    await queryRunner.query(`DROP TABLE "chat"`);
     await queryRunner.query(`DROP TABLE "connectedUser"`);
-    await queryRunner.query(`DROP TABLE "otp"`);
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_3d2f174ef04fb312fdebd0ddc5"`,
-    );
-    await queryRunner.query(`DROP TABLE "session"`);
-    await queryRunner.query(`DROP TABLE "workspaces"`);
-    await queryRunner.query(`DROP TABLE "users_groups"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_2ce81392a18ec27a31a01aa781"`,
     );
@@ -245,7 +234,14 @@ export class InitDB1736410054731 implements MigrationInterface {
       `DROP INDEX "public"."IDX_4838cd4fc48a6ff2d4aa01aa64"`,
     );
     await queryRunner.query(`DROP TABLE "messages"`);
+    await queryRunner.query(`DROP TABLE "users_groups"`);
     await queryRunner.query(`DROP TABLE "groups"`);
+    await queryRunner.query(`DROP TABLE "otp"`);
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_3d2f174ef04fb312fdebd0ddc5"`,
+    );
+    await queryRunner.query(`DROP TABLE "session"`);
+    await queryRunner.query(`DROP TABLE "workspaces"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_f0e1b4ecdca13b177e2e3a0613"`,
     );
