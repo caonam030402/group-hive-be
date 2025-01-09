@@ -16,6 +16,7 @@ import { User } from '../users/domain/user';
 import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
 import { JwtWsStrategy } from '../auth/strategies/jwt-ws.strategy';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
+import { MessageType } from './infrastructure/persistence/relational/entities';
 
 @UseGuards(WsAuthGuard)
 @UseFilters(BaseWsExceptionFilter)
@@ -63,8 +64,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.disconnect();
   }
 
-  @SubscribeMessage('message')
-  handleEvent(@MessageBody() data: any): any {
-    return data;
+  @SubscribeMessage('send-message-private')
+  sendMessagePrivate(
+    @MessageBody()
+    body: {
+      recipientId: string;
+      chatId?: string;
+      content?: string;
+      type: MessageType;
+    },
+    @CurrentUser() user: User,
+  ): any {
+    this.server.to(body.recipientId).emit('receive-message', { ...body, user });
+  }
+
+  @SubscribeMessage('send-message-group')
+  sendMessageGroup(
+    @MessageBody()
+    body: {
+      groupId: string;
+      content?: string;
+      type: MessageType;
+    },
+    @CurrentUser() user: User,
+  ): any {
+    this.server.to(body.groupId).emit('receive-message', { ...body, user });
   }
 }

@@ -6,6 +6,7 @@ import { ConnectedUserRepository } from '../../connected.repository';
 import { ConnectedUserEntity } from '../entities/connected-user.entity';
 import { ConnectedUser } from '../../../../domain/connected-user';
 import { ConnectedUserMapper } from '../mappers/connected-user.mapper';
+import { NullableType } from '../../../../../../utils/types/nullable.type';
 
 @Injectable()
 export class ConnectedUserRelationalRepository
@@ -34,5 +35,15 @@ export class ConnectedUserRelationalRepository
 
   async delete(socketId: ConnectedUser['socketId']): Promise<void> {
     await this.connectedUserRepository.delete({ socketId });
+  }
+
+  async findByUserId(
+    userId: ConnectedUser['user']['id'],
+  ): Promise<NullableType<ConnectedUser>> {
+    const userEntity = await this.connectedUserRepository.findOneBy({
+      user: { id: Number(userId) },
+    });
+
+    return userEntity ? ConnectedUserMapper.toDomain(userEntity) : null;
   }
 }

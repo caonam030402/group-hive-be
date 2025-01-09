@@ -29,7 +29,7 @@ export class Message {
   chat?: Chat;
 
   @ApiProperty({
-    type: String,
+    enum: MessageType,
   })
   type: MessageType;
 
@@ -40,7 +40,7 @@ export class Message {
   content: string;
 
   @ApiProperty({
-    type: MessageStatus,
+    enum: MessageStatus,
   })
   status: MessageStatus;
 

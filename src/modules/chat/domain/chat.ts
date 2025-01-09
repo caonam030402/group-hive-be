@@ -15,12 +15,12 @@ export class Chat {
   name: string;
 
   @ApiProperty({
-    type: Message,
+    type: () => Message,
   })
   messages: Message;
 
   @ApiProperty({
-    type: UserChat,
+    type: () => UserChat,
   })
   userChats: UserChat;
 

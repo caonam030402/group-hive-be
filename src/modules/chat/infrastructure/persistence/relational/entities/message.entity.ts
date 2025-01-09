@@ -50,7 +50,7 @@ export class MessageEntity {
   chat?: ChatEntity;
 
   @ApiProperty()
-  @Column({ type: 'enum', enum: MessageType })
+  @Column()
   type: MessageType;
 
   @ApiProperty()
@@ -58,7 +58,7 @@ export class MessageEntity {
   content: string;
 
   @ApiProperty()
-  @Column({ type: 'enum', enum: MessageStatus, default: MessageStatus.SENT })
+  @Column({ default: MessageStatus.SENT })
   status: MessageStatus;
 
   @ApiProperty()

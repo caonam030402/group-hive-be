@@ -1,3 +1,4 @@
+import { NullableType } from '../../../../utils/types/nullable.type';
 import { ConnectedUser } from '../../domain/connected-user';
 
 export abstract class ConnectedUserRepository {
@@ -8,4 +9,8 @@ export abstract class ConnectedUserRepository {
   ): Promise<ConnectedUser>;
 
   abstract delete(socketId: ConnectedUser['socketId']): Promise<void>;
+
+  abstract findByUserId(
+    userId: ConnectedUser['user']['id'],
+  ): Promise<NullableType<ConnectedUser>>;
 }
