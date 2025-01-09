@@ -1,11 +1,11 @@
-import { connectedUser } from '../../domain/connected-user';
+import { ConnectedUser } from '../../domain/connected-user';
 
-export abstract class connectedUserRepository {
-  abstract deleteAll(id: connectedUser['user']['id']): Promise<void>;
+export abstract class ConnectedUserRepository {
+  abstract deleteAll(id: ConnectedUser['user']['id']): Promise<void>;
 
   abstract create(
-    data: Omit<connectedUser, 'createdAt' | 'updatedAt'>,
-  ): Promise<connectedUser>;
+    data: Omit<ConnectedUser, 'createdAt' | 'updatedAt'>,
+  ): Promise<ConnectedUser>;
 
-  abstract delete(socketId: connectedUser['socketId']): Promise<void>;
+  abstract delete(socketId: ConnectedUser['socketId']): Promise<void>;
 }

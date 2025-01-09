@@ -14,7 +14,7 @@ import { UserEntity } from '../../../../../users/infrastructure/persistence/rela
 @Entity({
   name: 'connectedUser',
 })
-export class connectedUserEntity extends EntityRelationalHelper {
+export class ConnectedUserEntity extends EntityRelationalHelper {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;

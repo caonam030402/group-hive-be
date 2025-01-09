@@ -1,24 +1,24 @@
 import { Module } from '@nestjs/common';
-import { chatRepository } from '../chat.repository';
-import { chatRelationalRepository } from './repositories/chat.repository';
+import { ChatRepository } from '../chat.repository';
+import { ChatRelationalRepository } from './repositories/chat.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { chatEntity } from './entities/chat.entity';
-import { connectedUserRepository } from '../connected.repository';
+import { ConnectedUserRepository } from '../connected.repository';
 import { ConnectedUserRelationalRepository } from './repositories/connected-user.repository';
-import { connectedUserEntity } from './entities/connected-user.entity';
+import { ConnectedUserEntity } from './entities/connected-user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([chatEntity, connectedUserEntity])],
+  imports: [TypeOrmModule.forFeature([chatEntity, ConnectedUserEntity])],
   providers: [
     {
-      provide: chatRepository,
-      useClass: chatRelationalRepository,
+      provide: ChatRepository,
+      useClass: ChatRelationalRepository,
     },
     {
-      provide: connectedUserRepository,
+      provide: ConnectedUserRepository,
       useClass: ConnectedUserRelationalRepository,
     },
   ],
-  exports: [chatRepository, connectedUserRepository],
+  exports: [ChatRepository, ConnectedUserRepository],
 })
 export class RelationalChatPersistenceModule {}

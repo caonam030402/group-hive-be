@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/domain/user';
 import { UserEntity } from '../../users/infrastructure/persistence/relational/entities/user.entity';
 
-export class connectedUser {
+export class ConnectedUser {
   @ApiProperty({
     type: () => User,
   })

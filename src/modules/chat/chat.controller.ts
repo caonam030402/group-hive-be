@@ -18,16 +18,16 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { chat } from './domain/chat';
 import { AuthGuard } from '@nestjs/passport';
 
-import { chatService } from './service/chat.service';
 import { FindAllChatDto } from './dto/find-all-chats.dto';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from '../../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../../utils/infinity-pagination';
+import { Chat } from './domain/chat';
+import { ChatService } from './service/chat.service';
 
 @ApiTags('chat')
 @ApiBearerAuth()
@@ -36,12 +36,12 @@ import { infinityPagination } from '../../utils/infinity-pagination';
   path: 'chat',
   version: '1',
 })
-export class chatController {
-  constructor(private readonly chatService: chatService) {}
+export class ChatController {
+  constructor(private readonly chatService: ChatService) {}
 
   @Post()
   @ApiCreatedResponse({
-    type: chat,
+    type: Chat,
   })
   create(@Body() createChatDto: createChatDto) {
     return this.chatService.create(createChatDto);
@@ -49,11 +49,11 @@ export class chatController {
 
   @Get()
   @ApiOkResponse({
-    type: InfinityPaginationResponse(chat),
+    type: InfinityPaginationResponse(Chat),
   })
   async findAll(
     @Query() query: FindAllChatDto,
-  ): Promise<InfinityPaginationResponseDto<chat>> {
+  ): Promise<InfinityPaginationResponseDto<Chat>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -78,7 +78,7 @@ export class chatController {
     required: true,
   })
   @ApiOkResponse({
-    type: chat,
+    type: Chat,
   })
   findOne(@Param('id') id: string) {
     return this.chatService.findOne(id);
@@ -91,7 +91,7 @@ export class chatController {
     required: true,
   })
   @ApiOkResponse({
-    type: chat,
+    type: Chat,
   })
   update(@Param('id') id: string, @Body() updateChatDto: updateChatDto) {
     return this.chatService.update(id, updateChatDto);

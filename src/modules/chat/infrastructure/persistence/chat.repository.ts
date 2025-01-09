@@ -1,25 +1,25 @@
 import { DeepPartial } from 'typeorm';
 import { NullableType } from '../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../utils/types/pagination-options';
-import { chat } from '../../domain/chat';
+import { Chat } from '../../domain/chat';
 
-export abstract class chatRepository {
+export abstract class ChatRepository {
   abstract create(
-    data: Omit<chat, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<chat>;
+    data: Omit<Chat, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Chat>;
 
   abstract findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
-  }): Promise<chat[]>;
+  }): Promise<Chat[]>;
 
-  abstract findById(id: chat['id']): Promise<NullableType<chat>>;
+  abstract findById(id: Chat['id']): Promise<NullableType<Chat>>;
 
   abstract update(
-    id: chat['id'],
-    payload: DeepPartial<chat>,
-  ): Promise<chat | null>;
+    id: Chat['id'],
+    payload: DeepPartial<Chat>,
+  ): Promise<Chat | null>;
 
-  abstract remove(id: chat['id']): Promise<void>;
+  abstract remove(id: Chat['id']): Promise<void>;
 }

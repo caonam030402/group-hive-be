@@ -2,49 +2,49 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { chatEntity } from '../entities/chat.entity';
-import { chat } from '../../../../domain/chat';
-import { chatRepository } from '../../chat.repository';
-import { chatMapper } from '../mappers/chat.mapper';
+import { ChatRepository } from '../../chat.repository';
+import { ChatMapper } from '../mappers/chat.mapper';
 import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
 import { NullableType } from '../../../../../../utils/types/nullable.type';
+import { Chat } from '../../../../domain/chat';
 
 @Injectable()
-export class chatRelationalRepository implements chatRepository {
+export class ChatRelationalRepository implements ChatRepository {
   constructor(
     @InjectRepository(chatEntity)
     private readonly chatRepository: Repository<chatEntity>,
   ) {}
 
-  async create(data: chat): Promise<chat> {
-    const persistenceModel = chatMapper.toPersistence(data);
+  async create(data: Chat): Promise<Chat> {
+    const persistenceModel = ChatMapper.toPersistence(data);
     const newEntity = await this.chatRepository.save(
       this.chatRepository.create(persistenceModel),
     );
-    return chatMapper.toDomain(newEntity);
+    return ChatMapper.toDomain(newEntity);
   }
 
   async findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
-  }): Promise<chat[]> {
+  }): Promise<Chat[]> {
     const entities = await this.chatRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
     });
 
-    return entities.map((entity) => chatMapper.toDomain(entity));
+    return entities.map((entity) => ChatMapper.toDomain(entity));
   }
 
-  async findById(id: chat['id']): Promise<NullableType<chat>> {
+  async findById(id: Chat['id']): Promise<NullableType<Chat>> {
     const entity = await this.chatRepository.findOne({
       where: { id },
     });
 
-    return entity ? chatMapper.toDomain(entity) : null;
+    return entity ? ChatMapper.toDomain(entity) : null;
   }
 
-  async update(id: chat['id'], payload: Partial<chat>): Promise<chat> {
+  async update(id: Chat['id'], payload: Partial<Chat>): Promise<Chat> {
     const entity = await this.chatRepository.findOne({
       where: { id },
     });
@@ -55,17 +55,17 @@ export class chatRelationalRepository implements chatRepository {
 
     const updatedEntity = await this.chatRepository.save(
       this.chatRepository.create(
-        chatMapper.toPersistence({
-          ...chatMapper.toDomain(entity),
+        ChatMapper.toPersistence({
+          ...ChatMapper.toDomain(entity),
           ...payload,
         }),
       ),
     );
 
-    return chatMapper.toDomain(updatedEntity);
+    return ChatMapper.toDomain(updatedEntity);
   }
 
-  async remove(id: chat['id']): Promise<void> {
+  async remove(id: Chat['id']): Promise<void> {
     await this.chatRepository.delete(id);
   }
 }

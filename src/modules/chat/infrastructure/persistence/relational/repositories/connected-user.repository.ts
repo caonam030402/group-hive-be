@@ -2,21 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { connectedUserRepository } from '../../connected.repository';
-import { connectedUserEntity } from '../entities/connected-user.entity';
-import { connectedUser } from '../../../../domain/connected-user';
-import { connectedUserMapper } from '../mappers/connected-user.mapper';
+import { ConnectedUserRepository } from '../../connected.repository';
+import { ConnectedUserEntity } from '../entities/connected-user.entity';
+import { ConnectedUser } from '../../../../domain/connected-user';
+import { ConnectedUserMapper } from '../mappers/connected-user.mapper';
 
 @Injectable()
 export class ConnectedUserRelationalRepository
-  implements connectedUserRepository
+  implements ConnectedUserRepository
 {
   constructor(
-    @InjectRepository(connectedUserEntity)
-    private readonly connectedUserRepository: Repository<connectedUserEntity>,
+    @InjectRepository(ConnectedUserEntity)
+    private readonly connectedUserRepository: Repository<ConnectedUserEntity>,
   ) {}
 
-  async deleteAll(id: connectedUser['user']['id']): Promise<void> {
+  async deleteAll(id: ConnectedUser['user']['id']): Promise<void> {
     await this.connectedUserRepository.delete({
       user: {
         id: Number(id),
@@ -24,15 +24,15 @@ export class ConnectedUserRelationalRepository
     });
   }
 
-  async create(data: connectedUser): Promise<connectedUser> {
-    const persistenceModel = connectedUserMapper.toPersistence(data);
+  async create(data: ConnectedUser): Promise<ConnectedUser> {
+    const persistenceModel = ConnectedUserMapper.toPersistence(data);
     const newEntity = await this.connectedUserRepository.save(
       this.connectedUserRepository.create(persistenceModel),
     );
-    return connectedUserMapper.toDomain(newEntity);
+    return ConnectedUserMapper.toDomain(newEntity);
   }
 
-  async delete(socketId: connectedUser['socketId']): Promise<void> {
+  async delete(socketId: ConnectedUser['socketId']): Promise<void> {
     await this.connectedUserRepository.delete({ socketId });
   }
 }
