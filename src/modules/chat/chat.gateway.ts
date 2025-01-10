@@ -18,6 +18,8 @@ import { JwtWsStrategy } from '../auth/strategies/jwt-ws.strategy';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 import { MessageType } from './infrastructure/persistence/relational/entities';
 import { ChatService } from './service/chat.service';
+import { MessageService } from './service/messge.service';
+import { createMessageDto } from './dto/create-message.dto';
 
 @UseGuards(WsAuthGuard)
 @UseFilters(BaseWsExceptionFilter)
@@ -30,6 +32,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly connectedUserService: ConnectedUserService,
     private readonly jwtWsStrategy: JwtWsStrategy,
     private readonly chatService: ChatService,
+    private readonly messageService: MessageService,
   ) {}
 
   async onModuleInit() {
@@ -85,11 +88,28 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         .emit('receive-message', { ...body, user });
     }
 
+    const messageBody = {
+      user: {
+        id: user.id,
+      },
+      chat: {
+        id: body.chatId,
+      },
+      type: body.type,
+      content: body.content || '',
+    };
+
     if (!body.chatId) {
-      await this.chatService.create({
+      const chat = await this.chatService.create({
         userChats: [{ id: user.id }, { id: body.recipientId }],
       });
+
+      messageBody.chat = {
+        id: chat.id,
+      };
     }
+
+    await this.messageService.create(messageBody as createMessageDto);
   }
 
   @SubscribeMessage('send-message-group')

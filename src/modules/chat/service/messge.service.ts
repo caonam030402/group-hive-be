@@ -1,17 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { ConnectedUserRepository } from '../infrastructure/persistence/connected.repository';
-import { ConnectedUser } from '../domain/connected-user';
+import { MessageRepository } from '../infrastructure/persistence/message.repository';
+import { createMessageDto } from '../dto/create-message.dto';
 
 @Injectable()
 export class MessageService {
-  constructor(
-    private readonly connectedUserRepository: ConnectedUserRepository,
-  ) {}
+  constructor(private readonly messageRepository: MessageRepository) {}
 
-  create({ socketId, user }: Pick<ConnectedUser, 'socketId' | 'user'>) {
-    return this.connectedUserRepository.create({
-      socketId,
-      user,
-    });
+  create(createMessageDto: createMessageDto) {
+    return this.messageRepository.create(createMessageDto);
   }
 }

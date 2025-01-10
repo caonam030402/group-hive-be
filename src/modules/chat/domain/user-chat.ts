@@ -17,19 +17,4 @@ export class UserChat {
     type: () => Chat,
   })
   chat: Chat;
-
-  @ApiProperty({
-    type: Date,
-  })
-  joinedAt: Date;
-
-  @ApiProperty({
-    type: Date,
-  })
-  lastReadAt?: Date;
-
-  @ApiProperty({
-    type: Boolean,
-  })
-  isMuted: boolean;
 }
