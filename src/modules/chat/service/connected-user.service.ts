@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConnectedUserRepository } from '../infrastructure/persistence/connected.repository';
 import { ConnectedUser } from '../domain/connected-user';
+import { NullableType } from '../../../utils/types/nullable.type';
 
 @Injectable()
 export class ConnectedUserService {
@@ -8,8 +9,8 @@ export class ConnectedUserService {
     private readonly connectedUserRepository: ConnectedUserRepository,
   ) {}
 
-  deleteAll(userId: ConnectedUser['user']['id']): Promise<void> {
-    return this.connectedUserRepository.deleteAll(userId);
+  deleteAll(): Promise<void> {
+    return this.connectedUserRepository.deleteAll();
   }
 
   delete(socketId: ConnectedUser['socketId']): Promise<void> {
@@ -20,5 +21,11 @@ export class ConnectedUserService {
       socketId,
       user,
     });
+  }
+
+  findByUserId(
+    userId: ConnectedUser['user']['id'],
+  ): Promise<NullableType<ConnectedUser>> {
+    return this.connectedUserRepository.findByUserId(userId);
   }
 }

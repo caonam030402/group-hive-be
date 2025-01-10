@@ -11,7 +11,7 @@ export class User {
   @ApiProperty({
     type: idType,
   })
-  id: number | string;
+  id: number;
 
   // @Expose({ groups: ['me', 'admin'] })
   @ApiProperty({

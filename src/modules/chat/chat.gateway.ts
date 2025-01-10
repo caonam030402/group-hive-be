@@ -17,6 +17,7 @@ import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
 import { JwtWsStrategy } from '../auth/strategies/jwt-ws.strategy';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 import { MessageType } from './infrastructure/persistence/relational/entities';
+import { ChatService } from './service/chat.service';
 
 @UseGuards(WsAuthGuard)
 @UseFilters(BaseWsExceptionFilter)
@@ -28,12 +29,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly connectedUserService: ConnectedUserService,
     private readonly jwtWsStrategy: JwtWsStrategy,
+    private readonly chatService: ChatService,
   ) {}
 
-  async onModuleInit(@CurrentUser() user: User): Promise<void> {
-    if (user) {
-      await this.connectedUserService.deleteAll(Number(user.id));
-    }
+  async onModuleInit() {
+    await this.connectedUserService.deleteAll();
   }
 
   @SubscribeMessage('connection')
@@ -65,17 +65,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('send-message-private')
-  sendMessagePrivate(
+  async sendMessagePrivate(
     @MessageBody()
     body: {
-      recipientId: string;
-      chatId?: string;
+      recipientId: number;
+      chatId: string;
       content?: string;
       type: MessageType;
     },
     @CurrentUser() user: User,
-  ): any {
-    this.server.to(body.recipientId).emit('receive-message', { ...body, user });
+  ) {
+    const findSocketId = await this.connectedUserService.findByUserId(
+      body.recipientId,
+    );
+
+    if (findSocketId) {
+      this.server
+        .to(findSocketId.socketId)
+        .emit('receive-message', { ...body, user });
+    }
+
+    if (!body.chatId) {
+      await this.chatService.create({
+        userChats: [{ id: user.id }, { id: body.recipientId }],
+      });
+    }
   }
 
   @SubscribeMessage('send-message-group')
@@ -87,7 +101,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       type: MessageType;
     },
     @CurrentUser() user: User,
-  ): any {
+  ) {
     this.server.to(body.groupId).emit('receive-message', { ...body, user });
   }
 }

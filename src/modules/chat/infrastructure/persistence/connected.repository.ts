@@ -2,7 +2,7 @@ import { NullableType } from '../../../../utils/types/nullable.type';
 import { ConnectedUser } from '../../domain/connected-user';
 
 export abstract class ConnectedUserRepository {
-  abstract deleteAll(id: ConnectedUser['user']['id']): Promise<void>;
+  abstract deleteAll(): Promise<void>;
 
   abstract create(
     data: Omit<ConnectedUser, 'createdAt' | 'updatedAt'>,

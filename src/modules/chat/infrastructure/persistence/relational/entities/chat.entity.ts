@@ -18,7 +18,7 @@ export class ChatEntity {
 
   @ApiProperty()
   @Index()
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', default: 'private_chat' })
   name: string;
 
   @ApiProperty()

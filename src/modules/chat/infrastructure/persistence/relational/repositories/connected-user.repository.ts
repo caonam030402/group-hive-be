@@ -17,12 +17,8 @@ export class ConnectedUserRelationalRepository
     private readonly connectedUserRepository: Repository<ConnectedUserEntity>,
   ) {}
 
-  async deleteAll(id: ConnectedUser['user']['id']): Promise<void> {
-    await this.connectedUserRepository.delete({
-      user: {
-        id: Number(id),
-      },
-    });
+  async deleteAll(): Promise<void> {
+    await this.connectedUserRepository.clear();
   }
 
   async create(data: ConnectedUser): Promise<ConnectedUser> {

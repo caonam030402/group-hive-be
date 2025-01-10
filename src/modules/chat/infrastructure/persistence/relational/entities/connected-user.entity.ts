@@ -12,7 +12,7 @@ import { EntityRelationalHelper } from '../../../../../../utils/relational-entit
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 
 @Entity({
-  name: 'connectedUser',
+  name: 'connected_user',
 })
 export class ConnectedUserEntity extends EntityRelationalHelper {
   @ApiProperty()
