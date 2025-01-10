@@ -101,8 +101,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (!body.chatId) {
       const chat = await this.chatService.create({
-        userChats: [{ id: user.id }, { id: body.recipientId }],
-      });
+        userChats: [
+          {
+            user: {
+              id: user.id,
+            },
+          },
+          {
+            user: {
+              id: body.recipientId,
+            },
+          },
+        ],
+      } as any);
 
       messageBody.chat = {
         id: chat.id,

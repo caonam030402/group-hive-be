@@ -1,12 +1,11 @@
 import { IsOptional } from 'class-validator';
-import { User } from '../../users/domain/user';
-import { UserDto } from '../../users/dto/create-user.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { UserChat } from '../domain/user-chat';
 
 export class createChatDto {
-  @ApiPropertyOptional({ type: UserDto })
+  @ApiPropertyOptional({ type: UserChat })
   @IsOptional()
-  @Type(() => User)
-  userChats: UserDto[];
+  @Type(() => UserChat)
+  userChats: UserChat;
 }

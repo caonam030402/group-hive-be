@@ -20,9 +20,9 @@ export class Chat {
   messages: Message;
 
   @ApiProperty({
-    type: () => UserChat,
+    type: () => [UserChat],
   })
-  userChats: UserChat;
+  userChats: UserChat[];
 
   @ApiProperty({
     type: Date,

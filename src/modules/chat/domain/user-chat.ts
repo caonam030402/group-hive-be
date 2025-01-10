@@ -11,10 +11,10 @@ export class UserChat {
   @ApiProperty({
     type: () => User,
   })
-  user: User;
+  user?: User;
 
   @ApiProperty({
     type: () => Chat,
   })
-  chat: Chat;
+  chat?: Chat;
 }

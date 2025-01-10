@@ -1,5 +1,6 @@
+import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
 import { Chat } from '../../../../domain/chat';
-import { ChatEntity } from '../entities';
+import { ChatEntity, UserChatEntity } from '../entities';
 
 export class ChatMapper {
   static toDomain(raw: ChatEntity): Chat {
@@ -18,6 +19,16 @@ export class ChatMapper {
     }
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+    if (domainEntity.userChats) {
+      persistenceEntity.userChats = domainEntity.userChats.map((userChat) => {
+        const userChatEntity = new UserChatEntity();
+
+        if (userChat.user) {
+          userChatEntity.user = UserMapper.toPersistence(userChat.user);
+        }
+        return userChatEntity;
+      });
+    }
 
     return persistenceEntity;
   }

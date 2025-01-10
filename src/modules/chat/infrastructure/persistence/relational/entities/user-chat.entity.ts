@@ -1,6 +1,4 @@
 import {
-  Column,
-  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -14,7 +12,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('users_chats')
 @Unique(['user', 'chat'])
-@Index(['user', 'lastReadAt'])
+@Index(['user'])
 export class UserChatEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -30,16 +28,4 @@ export class UserChatEntity {
   @ManyToOne(() => ChatEntity)
   @JoinColumn()
   chat: ChatEntity;
-
-  @ApiProperty()
-  @CreateDateColumn()
-  joinedAt: Date;
-
-  @ApiProperty()
-  @Column({ type: 'timestamp', nullable: true })
-  lastReadAt?: Date;
-
-  @ApiProperty()
-  @Column({ type: 'boolean', default: false })
-  isMuted: boolean;
 }
