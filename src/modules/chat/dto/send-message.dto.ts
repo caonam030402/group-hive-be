@@ -1,4 +1,10 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Chat } from '../domain/chat';
 import { MessageType } from '../enum/message.enum';
@@ -12,6 +18,11 @@ export class sendMessagePrivateDto {
   @IsOptional()
   @IsString()
   chatId: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  isFirst: boolean;
 
   @ApiPropertyOptional({ type: Chat })
   @IsString()

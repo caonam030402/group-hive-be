@@ -22,13 +22,10 @@ import { User } from '../users/domain/user';
 import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
 import { JwtWsStrategy } from '../auth/strategies/jwt-ws.strategy';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
-import { ChatService } from './service/chat.service';
-import { MessageService } from './service/messge.service';
-import { createMessageDto } from './dto/create-message.dto';
-import { Chat } from './domain/chat';
 import { ChatGatewaySubscribeKeys } from './enum/gateway.enum';
 import { MessageType } from './enum/message.enum';
 import { sendMessagePrivateDto } from './dto/send-message.dto';
+import { ChatGatewayService } from './service/gateway.service';
 
 @UsePipes(new ValidationPipe())
 @UseGuards(WsAuthGuard)
@@ -39,10 +36,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger('ChatGateway');
 
   constructor(
-    private readonly connectedUserService: ConnectedUserService,
     private readonly jwtWsStrategy: JwtWsStrategy,
-    private readonly chatService: ChatService,
-    private readonly messageService: MessageService,
+    private readonly connectedUserService: ConnectedUserService,
+    private readonly chatGatewayService: ChatGatewayService,
   ) {}
 
   async onModuleInit() {
@@ -83,46 +79,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     body: sendMessagePrivateDto,
     @CurrentUser() user: User,
   ) {
-    const findSocketId = await this.connectedUserService.findByUserId(
-      body.recipientId,
-    );
-
-    // send message to recipient socket
-    if (findSocketId) {
-      this.server
-        .to(findSocketId.socketId)
-        .emit('receive-message', { ...body, user });
-    }
-
-    const messageBody: createMessageDto = {
-      user: user as UserEntity,
-      chat: {
-        id: body.chatId,
-      } as Chat,
-      type: body.type,
-      content: body.content,
-    };
-
-    // create new chat when first message
-    if (!body.chatId) {
-      const newChat = new Chat();
-      newChat.userChats = [
-        {
-          user: { id: user.id } as UserEntity,
-        },
-        {
-          user: { id: body.recipientId } as UserEntity,
-        },
-      ];
-      const chat = await this.chatService.create(newChat);
-
-      // add chat id to message
-      messageBody.chat = {
-        id: chat.id,
-      } as Chat;
-    }
-
-    await this.messageService.create(messageBody as createMessageDto);
+    await this.chatGatewayService.sendMessagePrivateService({
+      recipientId: body.recipientId,
+      body,
+      user,
+      server: this.server,
+    });
+    await this.chatGatewayService.sendMessageUpdateDbService({ body, user });
   }
 
   @SubscribeMessage(ChatGatewaySubscribeKeys.SEND_MESSAGE_GROUP)
