@@ -17,7 +17,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { ConnectedUserService } from './service/connected-user.service';
-import { CurrentUser } from '../../decorator/current-user.decorator';
+import { CurrentUser } from '../../common/decorator/current-user.decorator';
 import { User } from '../users/domain/user';
 import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
 import { JwtWsStrategy } from '../auth/strategies/jwt-ws.strategy';

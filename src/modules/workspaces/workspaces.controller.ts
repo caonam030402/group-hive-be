@@ -27,7 +27,7 @@ import {
 } from '../../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../../utils/infinity-pagination';
 import { FindAllWorkspacesDto } from './dto/find-all-workspaces.dto';
-import { CurrentUser } from '../../decorator/current-user.decorator';
+import { CurrentUser } from '../../common/decorator/current-user.decorator';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 
 @ApiTags('Workspaces')
