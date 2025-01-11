@@ -66,6 +66,6 @@ export class ChatRelationalRepository implements ChatRepository {
   }
 
   async remove(id: Chat['id']): Promise<void> {
-    await this.chatRepository.delete(id);
+    await this.chatRepository.delete(id ?? '');
   }
 }

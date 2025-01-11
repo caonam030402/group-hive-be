@@ -7,5 +7,5 @@ export class createChatDto {
   @ApiPropertyOptional({ type: UserChat })
   @IsOptional()
   @Type(() => UserChat)
-  userChats: UserChat;
+  userChats: UserChat[];
 }

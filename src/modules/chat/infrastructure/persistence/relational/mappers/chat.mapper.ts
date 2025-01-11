@@ -17,6 +17,7 @@ export class ChatMapper {
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;
     }
+
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
 

@@ -1,10 +1,10 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
-import { MessageType } from '../infrastructure/persistence/relational/entities';
+import { Type } from 'class-transformer';
 import { Group } from '../domain/group';
 import { Chat } from '../domain/chat';
 import { UserEntity } from '../../users/infrastructure/persistence/relational/entities/user.entity';
+import { MessageType } from '../enum/message.enum';
 
 export class createMessageDto {
   @ApiPropertyOptional({ type: UserEntity })
@@ -22,9 +22,14 @@ export class createMessageDto {
   @Type(() => Group)
   group?: Group;
 
-  @ApiPropertyOptional({ enum: MessageType })
+  @ApiPropertyOptional({
+    enum: [1, 2, 3],
+    externalDocs: {
+      description: '1 - Text, 2 - Image, 3 - File',
+      url: 'http://example.com',
+    },
+  })
   @IsEnum(MessageType)
-  @Transform(({ value }) => value && MessageType[value])
   type: MessageType;
 
   @ApiPropertyOptional({ type: String })

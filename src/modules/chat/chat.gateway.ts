@@ -1,4 +1,10 @@
-import { Logger, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  Logger,
+  UseFilters,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { Socket } from 'socket.io';
 import {
   WebSocketGateway,
@@ -16,11 +22,15 @@ import { User } from '../users/domain/user';
 import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
 import { JwtWsStrategy } from '../auth/strategies/jwt-ws.strategy';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
-import { MessageType } from './infrastructure/persistence/relational/entities';
 import { ChatService } from './service/chat.service';
 import { MessageService } from './service/messge.service';
 import { createMessageDto } from './dto/create-message.dto';
+import { Chat } from './domain/chat';
+import { ChatGatewaySubscribeKeys } from './enum/gateway.enum';
+import { MessageType } from './enum/message.enum';
+import { sendMessagePrivateDto } from './dto/send-message.dto';
 
+@UsePipes(new ValidationPipe())
 @UseGuards(WsAuthGuard)
 @UseFilters(BaseWsExceptionFilter)
 @WebSocketGateway(3001, { cors: { origin: '*' } })
@@ -67,63 +77,55 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.disconnect();
   }
 
-  @SubscribeMessage('send-message-private')
+  @SubscribeMessage(ChatGatewaySubscribeKeys.SEND_MESSAGE_PRIVATE)
   async sendMessagePrivate(
     @MessageBody()
-    body: {
-      recipientId: number;
-      chatId: string;
-      content?: string;
-      type: MessageType;
-    },
+    body: sendMessagePrivateDto,
     @CurrentUser() user: User,
   ) {
     const findSocketId = await this.connectedUserService.findByUserId(
       body.recipientId,
     );
 
+    // send message to recipient socket
     if (findSocketId) {
       this.server
         .to(findSocketId.socketId)
         .emit('receive-message', { ...body, user });
     }
 
-    const messageBody = {
-      user: {
-        id: user.id,
-      },
+    const messageBody: createMessageDto = {
+      user: user as UserEntity,
       chat: {
         id: body.chatId,
-      },
+      } as Chat,
       type: body.type,
-      content: body.content || '',
+      content: body.content,
     };
 
+    // create new chat when first message
     if (!body.chatId) {
-      const chat = await this.chatService.create({
-        userChats: [
-          {
-            user: {
-              id: user.id,
-            },
-          },
-          {
-            user: {
-              id: body.recipientId,
-            },
-          },
-        ],
-      } as any);
+      const newChat = new Chat();
+      newChat.userChats = [
+        {
+          user: { id: user.id } as UserEntity,
+        },
+        {
+          user: { id: body.recipientId } as UserEntity,
+        },
+      ];
+      const chat = await this.chatService.create(newChat);
 
+      // add chat id to message
       messageBody.chat = {
         id: chat.id,
-      };
+      } as Chat;
     }
 
     await this.messageService.create(messageBody as createMessageDto);
   }
 
-  @SubscribeMessage('send-message-group')
+  @SubscribeMessage(ChatGatewaySubscribeKeys.SEND_MESSAGE_GROUP)
   sendMessageGroup(
     @MessageBody()
     body: {

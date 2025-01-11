@@ -11,18 +11,7 @@ import { UserEntity } from '../../../../../users/infrastructure/persistence/rela
 import { GroupEntity } from './group.entity';
 import { ChatEntity } from './chat.entity';
 import { ApiProperty } from '@nestjs/swagger';
-
-export enum MessageType {
-  TEXT = 'text',
-  IMAGE = 'image',
-  FILE = 'file',
-}
-
-export enum MessageStatus {
-  SENT = 'sent',
-  DELIVERED = 'delivered',
-  READ = 'read',
-}
+import { MessageStatus, MessageType } from '../../../../enum/message.enum';
 
 @Entity('messages')
 @Index(['chat', 'sentAt'])

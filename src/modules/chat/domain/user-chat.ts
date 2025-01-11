@@ -6,7 +6,7 @@ export class UserChat {
   @ApiProperty({
     type: String,
   })
-  id: string;
+  id?: string;
 
   @ApiProperty({
     type: () => User,

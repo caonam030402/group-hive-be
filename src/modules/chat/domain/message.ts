@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/domain/user';
 import { Group } from './group';
-import {
-  MessageStatus,
-  MessageType,
-} from '../infrastructure/persistence/relational/entities';
+
 import { Chat } from './chat';
+import { MessageStatus, MessageType } from '../enum/message.enum';
 
 export class Message {
   @ApiProperty({
