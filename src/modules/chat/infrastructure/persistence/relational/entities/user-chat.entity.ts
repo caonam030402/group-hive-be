@@ -25,7 +25,7 @@ export class UserChatEntity {
 
   @ApiProperty()
   @Index()
-  @ManyToOne(() => ChatEntity)
+  @ManyToOne(() => ChatEntity, (user) => user.userChats)
   @JoinColumn()
   chat: ChatEntity;
 }

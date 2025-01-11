@@ -26,7 +26,9 @@ export class ChatEntity {
   messages: MessageEntity[];
 
   @ApiProperty()
-  @OneToMany(() => UserChatEntity, (userChat) => userChat.chat)
+  @OneToMany(() => UserChatEntity, (userChat) => userChat.chat, {
+    cascade: true,
+  })
   userChats: UserChatEntity[];
 
   @ApiProperty()

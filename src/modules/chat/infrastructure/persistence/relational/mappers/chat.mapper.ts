@@ -19,6 +19,7 @@ export class ChatMapper {
     }
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+
     if (domainEntity.userChats) {
       persistenceEntity.userChats = domainEntity.userChats.map((userChat) => {
         const userChatEntity = new UserChatEntity();
