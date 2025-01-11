@@ -7,7 +7,6 @@ import { ChatMapper } from '../mappers/chat.mapper';
 import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
 import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { Chat } from '../../../../domain/chat';
-import { Message } from '../../../../domain/message';
 
 @Injectable()
 export class ChatRelationalRepository implements ChatRepository {
@@ -68,16 +67,5 @@ export class ChatRelationalRepository implements ChatRepository {
 
   async remove(id: Chat['id']): Promise<void> {
     await this.chatRepository.delete(id ?? '');
-  }
-
-  async pushMessage(
-    messageId: Message['id'],
-    chatId: Chat['id'],
-  ): Promise<void> {
-    await this.chatRepository
-      .createQueryBuilder()
-      .relation(Chat, 'messages')
-      .of(chatId)
-      .add(messageId);
   }
 }
