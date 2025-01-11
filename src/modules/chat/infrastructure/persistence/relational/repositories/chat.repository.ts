@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { ChatEntity } from '../entities/chat.entity';
 import { ChatRepository } from '../../chat.repository';
 import { ChatMapper } from '../mappers/chat.mapper';
 import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
 import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { Chat } from '../../../../domain/chat';
+import { IQueryOptions } from '../../../../../../utils/types/query-options';
 
 @Injectable()
 export class ChatRelationalRepository implements ChatRepository {
@@ -25,14 +26,36 @@ export class ChatRelationalRepository implements ChatRepository {
 
   async findAllWithPagination({
     paginationOptions,
+    queryOptions,
   }: {
     paginationOptions: IPaginationOptions;
+    queryOptions: IQueryOptions;
   }): Promise<Chat[]> {
+    const { filterRelational, filterBy, search, order } = queryOptions;
+    const where = {};
+
+    if (filterRelational && filterRelational.field) {
+      where[filterRelational.field] = {
+        id: filterRelational.value,
+      };
+    }
+
+    if (filterBy && filterBy.field) {
+      where[filterBy.field] = filterBy.value;
+    }
+
+    if (search && search.field) {
+      where[search.field] = Like(`%${search.value}%`);
+    }
+
     const entities = await this.chatRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: where,
+      order: {
+        [order.field ?? 'createdAt']: order.direction ?? 'asc',
+      },
     });
-
     return entities.map((entity) => ChatMapper.toDomain(entity));
   }
 

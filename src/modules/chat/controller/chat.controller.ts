@@ -9,8 +9,8 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { createChatDto } from './dto/create-chat.dto';
-import { updateChatDto } from './dto/update-chat.dto';
+import { createChatDto } from '../dto/create-chat.dto';
+import { updateChatDto } from '../dto/update-chat.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -20,14 +20,14 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
-import { FindAllChatDto } from './dto/find-all-chats.dto';
+import { FindAllChatDto } from '../dto/find-all-chats.dto';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
-} from '../../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../../utils/infinity-pagination';
-import { Chat } from './domain/chat';
-import { ChatService } from './service/chat.service';
+} from '../../../utils/dto/infinity-pagination-response.dto';
+import { infinityPagination } from '../../../utils/infinity-pagination';
+import { Chat } from '../domain/chat';
+import { ChatService } from '../service/chat.service';
 
 @ApiTags('chat')
 @ApiBearerAuth()
@@ -60,8 +60,28 @@ export class ChatController {
       limit = 50;
     }
 
+    const queryOptions = {
+      filterRelational: {
+        field: query.filterRelationalField,
+        value: query.filterRelationalValue,
+      },
+      filterBy: {
+        field: query.filterByField,
+        value: query.filterByValue,
+      },
+      order: {
+        field: query.orderField,
+        direction: query.orderDirection,
+      },
+      search: {
+        field: query.searchField,
+        value: query.searchValue,
+      },
+    } as const;
+
     return infinityPagination(
       await this.chatService.findAllWithPagination({
+        queryOptions: queryOptions,
         paginationOptions: {
           page,
           limit,

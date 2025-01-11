@@ -4,6 +4,7 @@ import { updateChatDto } from '../dto/update-chat.dto';
 import { Chat } from '../domain/chat';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { ChatRepository } from '../infrastructure/persistence/chat.repository';
+import { IQueryOptions } from '../../../utils/types/query-options';
 
 @Injectable()
 export class ChatService {
@@ -15,14 +16,17 @@ export class ChatService {
 
   findAllWithPagination({
     paginationOptions,
+    queryOptions,
   }: {
     paginationOptions: IPaginationOptions;
+    queryOptions: IQueryOptions;
   }) {
     return this.chatRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
       },
+      queryOptions,
     });
   }
 
