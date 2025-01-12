@@ -2,15 +2,17 @@ import { UserMapper } from '../../../../../users/infrastructure/persistence/rela
 import { WorkspacesMapper } from '../../../../../workspaces/infrastructure/persistence/relational/mappers/workspaces.mapper';
 import { Chat } from '../../../../domain/chat';
 import { ChatEntity, UserChatEntity } from '../entities';
+import { MessageMapper } from './message.mapper';
 
 export class ChatMapper {
   static toDomain(raw: ChatEntity): Chat {
     const domainEntity = new Chat();
-    domainEntity.id = raw.id;
-    domainEntity.createdAt = raw.createdAt;
-    domainEntity.updatedAt = raw.updatedAt;
-    domainEntity.chatType = raw.chatType;
-    domainEntity.name = raw.name;
+    domainEntity.id = raw?.id;
+    domainEntity.createdAt = raw?.createdAt;
+    domainEntity.updatedAt = raw?.updatedAt;
+    domainEntity.chatType = raw?.chatType;
+    domainEntity.name = raw?.name;
+    domainEntity.lastMessage = MessageMapper.toDomain(raw?.lastMessage);
 
     return domainEntity;
   }

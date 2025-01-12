@@ -64,6 +64,10 @@ export class ChatRelationalRepository implements ChatRepository {
     queryBuilder.skip((paginationOptions.page - 1) * paginationOptions.limit);
     queryBuilder.take(paginationOptions.limit);
 
+    queryBuilder
+      .leftJoinAndSelect('chat.lastMessage', 'lastMessage')
+      .leftJoinAndSelect('lastMessage.user', 'user');
+
     const entities = await queryBuilder.getMany();
     return entities.map((entity) => ChatMapper.toDomain(entity));
   }

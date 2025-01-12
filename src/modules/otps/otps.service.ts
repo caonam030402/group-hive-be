@@ -90,7 +90,6 @@ export class OtpsService {
 
   async confirm(confirmOtpDto: ConfirmOtpDto) {
     const findUser = await this.otpRepository.findByUser(confirmOtpDto.user);
-    console.log(confirmOtpDto);
     if (!findUser) {
       throw new BadRequestException({
         message: 'User not found',

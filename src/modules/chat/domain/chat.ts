@@ -22,6 +22,11 @@ export class Chat {
   messages: Message;
 
   @ApiProperty({
+    type: () => Message,
+  })
+  lastMessage: Message;
+
+  @ApiProperty({
     type: () => [UserChat],
   })
   userChats: UserChat[];
@@ -35,6 +40,11 @@ export class Chat {
     enum: ChatType,
   })
   chatType: ChatType;
+
+  @ApiProperty({
+    type: String,
+  })
+  avatar?: string;
 
   @ApiProperty({
     type: Date,

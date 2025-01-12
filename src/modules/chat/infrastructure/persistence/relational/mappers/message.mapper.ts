@@ -6,15 +6,15 @@ import { ChatMapper } from './chat.mapper';
 export class MessageMapper {
   static toDomain(raw: MessageEntity): Message {
     const domainEntity = new Message();
-    domainEntity.id = raw.id;
-    if (raw.chat) {
-      domainEntity.chat = ChatMapper.toDomain(raw.chat);
+    domainEntity.id = raw?.id;
+    if (raw?.chat) {
+      domainEntity.chat = ChatMapper.toDomain(raw?.chat);
     }
-    domainEntity.content = raw.content;
-    domainEntity.status = raw.status;
-    domainEntity.user = raw.user;
-    domainEntity.type = raw.type;
-    domainEntity.sentAt = raw.sentAt;
+    domainEntity.content = raw?.content;
+    domainEntity.status = raw?.status;
+    domainEntity.user = raw?.user;
+    domainEntity.type = raw?.type;
+    domainEntity.sentAt = raw?.sentAt;
 
     return domainEntity;
   }

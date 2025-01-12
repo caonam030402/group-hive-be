@@ -8,7 +8,13 @@ export abstract class ChatRepository {
   abstract create(
     data: Omit<
       Chat,
-      'id' | 'createdAt' | 'updatedAt' | 'name' | 'messages' | 'userChats'
+      | 'id'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'name'
+      | 'messages'
+      | 'userChats'
+      | 'lastMessage'
     >,
   ): Promise<Chat>;
 

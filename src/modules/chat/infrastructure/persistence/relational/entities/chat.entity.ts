@@ -6,6 +6,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,14 +27,17 @@ export class ChatEntity {
   name: string;
 
   @ApiProperty()
-  @OneToMany(() => MessageEntity, (message) => message.chat)
-  messages: MessageEntity[];
-
-  @ApiProperty()
   @OneToMany(() => UserChatEntity, (userChat) => userChat.chat, {
     cascade: true,
   })
   userChats: UserChatEntity[];
+
+  @ApiProperty()
+  @OneToOne(() => MessageEntity, {
+    eager: true,
+  })
+  @JoinColumn()
+  lastMessage: MessageEntity;
 
   @ApiProperty()
   @ManyToOne(() => WorkspacesEntity)
@@ -43,6 +47,10 @@ export class ChatEntity {
   @ApiProperty()
   @Column({ default: ChatType.PRIVATE })
   chatType: ChatType;
+
+  @ApiProperty()
+  @Column({ nullable: true })
+  avatar: string;
 
   @ApiProperty()
   @CreateDateColumn()

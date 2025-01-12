@@ -17,8 +17,6 @@ export class RedisIoAdapter extends IoAdapter {
   private adapterConstructor: ReturnType<typeof createAdapter>;
 
   async connectToRedis(): Promise<void> {
-    console.log(this.configService.get('redis.redisUsername', { infer: true }));
-
     const pubClient = createClient({
       username: this.configService.get('redis.redisUsername', { infer: true }),
       password: this.configService.get('redis.redisPassword', { infer: true }),
