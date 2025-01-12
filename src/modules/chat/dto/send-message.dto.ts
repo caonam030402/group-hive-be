@@ -8,6 +8,7 @@ import {
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Chat } from '../domain/chat';
 import { MessageType } from '../enum/message.enum';
+import { Workspaces } from '../../workspaces/domain/workspaces';
 
 export class sendMessagePrivateDto {
   @ApiPropertyOptional({ type: Number, example: 1 })
@@ -37,4 +38,9 @@ export class sendMessagePrivateDto {
   })
   @IsEnum(MessageType)
   type: MessageType;
+
+  @ApiPropertyOptional({ type: Workspaces['id'] })
+  @IsOptional()
+  @IsString()
+  workspaceId: Workspaces['id'];
 }

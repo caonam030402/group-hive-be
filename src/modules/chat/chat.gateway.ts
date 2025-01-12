@@ -85,7 +85,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       user,
       server: this.server,
     });
-    await this.chatGatewayService.sendMessageUpdateDbService({ body, user });
+    await this.chatGatewayService.sendMessagePrivateUpdateDbService({
+      body,
+      user,
+    });
   }
 
   @SubscribeMessage(ChatGatewaySubscribeKeys.SEND_MESSAGE_GROUP)

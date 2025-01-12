@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserChat } from './user-chat';
 import { Message } from './message';
 import { ChatType } from '../enum/chat.enum';
+import { Workspaces } from '../../workspaces/domain/workspaces';
 
 export class Chat {
   @ApiProperty({
@@ -24,6 +25,11 @@ export class Chat {
     type: () => [UserChat],
   })
   userChats: UserChat[];
+
+  @ApiProperty({
+    type: () => Workspaces,
+  })
+  workspace: Workspaces;
 
   @ApiProperty({
     enum: ChatType,

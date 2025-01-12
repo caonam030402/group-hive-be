@@ -3,6 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { UserChat } from '../domain/user-chat';
 import { ChatType } from '../enum/chat.enum';
+import { Workspaces } from '../../workspaces/domain/workspaces';
 
 export class createChatDto {
   @ApiPropertyOptional({ type: UserChat })
@@ -13,4 +14,8 @@ export class createChatDto {
   @ApiPropertyOptional({ enum: ChatType })
   @IsEnum(ChatType)
   chatType: ChatType;
+
+  @ApiPropertyOptional({ type: Workspaces })
+  @IsOptional()
+  workspace: Workspaces;
 }

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/domain/user';
-import { Group } from './group';
 
 import { Chat } from './chat';
 import { MessageStatus, MessageType } from '../enum/message.enum';
@@ -15,11 +14,6 @@ export class Message {
     type: () => User,
   })
   user: User;
-
-  @ApiProperty({
-    type: () => Group,
-  })
-  group?: Group;
 
   @ApiProperty({
     type: () => Chat,

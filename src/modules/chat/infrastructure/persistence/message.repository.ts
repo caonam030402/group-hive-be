@@ -4,8 +4,7 @@ import { Message } from '../../domain/message';
 
 export abstract class MessageRepository {
   abstract create(
-    data: Omit<Message, 'sentAt' | 'status' | 'id'> &
-      Partial<Pick<Message, 'group' | 'chat'>>,
+    data: Omit<Message, 'sentAt' | 'status' | 'id'>,
   ): Promise<Message>;
 
   abstract findAllWithPagination({

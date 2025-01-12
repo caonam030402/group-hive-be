@@ -1,7 +1,6 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { Group } from '../domain/group';
 import { Chat } from '../domain/chat';
 import { UserEntity } from '../../users/infrastructure/persistence/relational/entities/user.entity';
 import { MessageType } from '../enum/message.enum';
@@ -16,11 +15,6 @@ export class createMessageDto {
   @IsOptional()
   @Type(() => Chat)
   chat: Chat;
-
-  @ApiPropertyOptional({ type: Group })
-  @IsOptional()
-  @Type(() => Group)
-  group?: Group;
 
   @ApiPropertyOptional({
     enum: [1, 2, 3],
