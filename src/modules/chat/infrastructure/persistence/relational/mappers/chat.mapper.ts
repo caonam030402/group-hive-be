@@ -7,12 +7,12 @@ import { MessageMapper } from './message.mapper';
 export class ChatMapper {
   static toDomain(raw: ChatEntity): Chat {
     const domainEntity = new Chat();
-    domainEntity.id = raw?.id;
-    domainEntity.createdAt = raw?.createdAt;
-    domainEntity.updatedAt = raw?.updatedAt;
-    domainEntity.chatType = raw?.chatType;
-    domainEntity.name = raw?.name;
-    domainEntity.lastMessage = MessageMapper.toDomain(raw?.lastMessage);
+    domainEntity.id = raw.id;
+    domainEntity.createdAt = raw.createdAt;
+    domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.chatType = raw.chatType;
+    domainEntity.name = raw.name;
+    domainEntity.lastMessage = MessageMapper.toDomain(raw.lastMessage);
 
     return domainEntity;
   }
