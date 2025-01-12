@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ChatEntity } from '../entities/chat.entity';
 import { ChatRepository } from '../../chat.repository';
 import { ChatMapper } from '../mappers/chat.mapper';
@@ -32,30 +32,39 @@ export class ChatRelationalRepository implements ChatRepository {
     queryOptions: IQueryOptions;
   }): Promise<Chat[]> {
     const { filterRelational, filterBy, search, order } = queryOptions;
-    const where = {};
+
+    const queryBuilder = this.chatRepository.createQueryBuilder('chat');
 
     if (filterRelational && filterRelational.field) {
-      where[filterRelational.field] = {
-        id: filterRelational.value,
-      };
+      queryBuilder.andWhere(
+        `chat.${filterRelational.field} = :filterRelationalValue`,
+        {
+          filterRelationalValue: filterRelational.value,
+        },
+      );
     }
 
     if (filterBy && filterBy.field) {
-      where[filterBy.field] = filterBy.value;
+      queryBuilder.andWhere(`chat.${filterBy.field} = :filterByValue`, {
+        filterByValue: filterBy.value,
+      });
     }
 
     if (search && search.field) {
-      where[search.field] = Like(`%${search.value}%`);
+      queryBuilder.andWhere(`chat.${search.field} LIKE :searchValue`, {
+        searchValue: `%${search.value}%`,
+      });
     }
 
-    const entities = await this.chatRepository.find({
-      skip: (paginationOptions.page - 1) * paginationOptions.limit,
-      take: paginationOptions.limit,
-      where: where,
-      order: {
-        [order.field ?? 'createdAt']: order.direction ?? 'asc',
-      },
-    });
+    queryBuilder.orderBy(
+      `chat.${order.field ?? 'createdAt'}`,
+      (order.direction?.toUpperCase() as 'ASC' | 'DESC') ?? 'ASC',
+    );
+
+    queryBuilder.skip((paginationOptions.page - 1) * paginationOptions.limit);
+    queryBuilder.take(paginationOptions.limit);
+
+    const entities = await queryBuilder.getMany();
     return entities.map((entity) => ChatMapper.toDomain(entity));
   }
 

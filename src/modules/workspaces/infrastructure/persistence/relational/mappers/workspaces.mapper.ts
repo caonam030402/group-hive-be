@@ -23,18 +23,18 @@ export class WorkspacesMapper {
 
   static toPersistence(domainEntity: Workspaces): WorkspacesEntity {
     const persistenceEntity = new WorkspacesEntity();
-    if (domainEntity.id) {
-      persistenceEntity.id = domainEntity.id;
+    if (domainEntity?.id) {
+      persistenceEntity.id = domainEntity?.id;
     }
-    persistenceEntity.createdAt = domainEntity.createdAt;
-    persistenceEntity.updatedAt = domainEntity.updatedAt;
-    persistenceEntity.industry = domainEntity.industry;
-    persistenceEntity.name = domainEntity.name;
-    persistenceEntity.size = domainEntity.size;
-    persistenceEntity.region = domainEntity.region;
+    persistenceEntity.createdAt = domainEntity?.createdAt;
+    persistenceEntity.updatedAt = domainEntity?.updatedAt;
+    persistenceEntity.industry = domainEntity?.industry;
+    persistenceEntity.name = domainEntity?.name;
+    persistenceEntity.size = domainEntity?.size;
+    persistenceEntity.region = domainEntity?.region;
     persistenceEntity.description = domainEntity?.description;
     if (domainEntity?.members) {
-      persistenceEntity.members = domainEntity.members.map((userWorkspace) => {
+      persistenceEntity.members = domainEntity?.members.map((userWorkspace) => {
         const userWorkspaceEntity = new UserWorkspaceEntity();
 
         if (userWorkspace.user) {
@@ -47,7 +47,7 @@ export class WorkspacesMapper {
       persistenceEntity.members = domainEntity.members;
     }
     persistenceEntity.avatar = domainEntity?.avatar;
-    persistenceEntity.owner = domainEntity.owner;
+    persistenceEntity.owner = domainEntity?.owner;
 
     return persistenceEntity;
   }

@@ -8,9 +8,10 @@ import { AuthModule } from '../auth/auth.module';
 import { MessageService } from './service/messge.service';
 import { ChatGatewayService } from './service/gateway.service';
 import { MessageController } from './controller/message.controller';
+import { WorkspacesModule } from '../workspaces/workspaces.module';
 
 @Module({
-  imports: [RelationalChatPersistenceModule, AuthModule],
+  imports: [RelationalChatPersistenceModule, AuthModule, WorkspacesModule],
   controllers: [ChatController, MessageController],
   providers: [
     ChatService,

@@ -11,7 +11,7 @@ import { Chat } from '../domain/chat';
 import { MessageService } from './messge.service';
 import { ChatGatewaySubscribeKeys } from '../enum/gateway.enum';
 import { ChatType } from '../enum/chat.enum';
-import { Workspaces } from '../../workspaces/domain/workspaces';
+import { WorkspacesService } from '../../workspaces/workspaces.service';
 
 @Injectable()
 export class ChatGatewayService {
@@ -19,6 +19,7 @@ export class ChatGatewayService {
     private readonly connectedUserService: ConnectedUserService,
     private readonly chatService: ChatService,
     private readonly messageService: MessageService,
+    private readonly workspaceService: WorkspacesService,
   ) {}
   async sendMessagePrivateService({
     recipientId,
@@ -59,11 +60,15 @@ export class ChatGatewayService {
 
     // create new chat when first message
     if (body.isFirst) {
+      const newWorkspace = await this.workspaceService.findOne(
+        body.workspaceId,
+      );
       const newChat = new Chat();
-      const newWorkspace = new Workspaces();
-      newWorkspace.id = body.workspaceId;
+      newWorkspace!.id = body.workspaceId;
       newChat.chatType = ChatType.PRIVATE;
-      newChat.workspace = newWorkspace;
+      if (newWorkspace) {
+        newChat.workspace = newWorkspace;
+      }
       newChat.userChats = [
         {
           user: { id: user.id } as UserEntity,

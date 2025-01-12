@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -36,12 +37,11 @@ export class ChatEntity {
 
   @ApiProperty()
   @ManyToOne(() => WorkspacesEntity)
+  @JoinColumn()
   workspace: WorkspacesEntity;
 
-  @ApiProperty({
-    enum: ChatType,
-  })
-  @Column()
+  @ApiProperty()
+  @Column({ default: ChatType.PRIVATE })
   chatType: ChatType;
 
   @ApiProperty()

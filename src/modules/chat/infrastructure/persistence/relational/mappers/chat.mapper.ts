@@ -1,4 +1,5 @@
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
+import { WorkspacesMapper } from '../../../../../workspaces/infrastructure/persistence/relational/mappers/workspaces.mapper';
 import { Chat } from '../../../../domain/chat';
 import { ChatEntity, UserChatEntity } from '../entities';
 
@@ -8,6 +9,8 @@ export class ChatMapper {
     domainEntity.id = raw.id;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.chatType = raw.chatType;
+    domainEntity.name = raw.name;
 
     return domainEntity;
   }
@@ -20,6 +23,10 @@ export class ChatMapper {
 
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+    persistenceEntity.chatType = domainEntity.chatType;
+    persistenceEntity.workspace = WorkspacesMapper.toPersistence(
+      domainEntity.workspace,
+    );
 
     if (domainEntity.userChats) {
       persistenceEntity.userChats = domainEntity.userChats.map((userChat) => {
