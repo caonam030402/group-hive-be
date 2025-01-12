@@ -31,6 +31,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         subscribersDir: 'subscriber',
       },
       extra: {
+        timezone: 'UTC',
         // based on https://node-postgres.com/apis/pool
         // max connection pool size
         max: this.configService.get('database.maxConnections', { infer: true }),

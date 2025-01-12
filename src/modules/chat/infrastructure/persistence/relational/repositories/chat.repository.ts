@@ -8,6 +8,7 @@ import { IPaginationOptions } from '../../../../../../utils/types/pagination-opt
 import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { Chat } from '../../../../domain/chat';
 import { IQueryOptions } from '../../../../../../utils/types/query-options';
+import { ChatType } from '../../../../enum/chat.enum';
 
 @Injectable()
 export class ChatRelationalRepository implements ChatRepository {
@@ -61,15 +62,21 @@ export class ChatRelationalRepository implements ChatRepository {
       (order.direction?.toUpperCase() as 'ASC' | 'DESC') ?? 'ASC',
     );
 
-    queryBuilder.skip((paginationOptions.page - 1) * paginationOptions.limit);
-    queryBuilder.take(paginationOptions.limit);
-
     queryBuilder
       .leftJoinAndSelect('chat.lastMessage', 'lastMessage')
-      .leftJoinAndSelect('lastMessage.user', 'user');
+      .leftJoinAndSelect('lastMessage.user', 'userLastMessage')
+      .leftJoinAndSelect('chat.userChats', 'userChats')
+      .leftJoinAndSelect('userChats.user', 'userChat')
+      .take(paginationOptions.limit)
+      .skip((paginationOptions.page - 1) * paginationOptions.limit);
 
     const entities = await queryBuilder.getMany();
-    return entities.map((entity) => ChatMapper.toDomain(entity));
+    return entities.map((entity) => {
+      if (entity.chatType === ChatType.GROUP) {
+        delete entity.userChats;
+      }
+      return ChatMapper.toDomain(entity);
+    });
   }
 
   async findById(id: Chat['id']): Promise<NullableType<Chat>> {

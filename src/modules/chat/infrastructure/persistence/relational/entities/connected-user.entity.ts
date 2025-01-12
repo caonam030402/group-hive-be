@@ -32,10 +32,10 @@ export class ConnectedUserEntity extends EntityRelationalHelper {
   @Column()
   socketId: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @ApiProperty()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 }

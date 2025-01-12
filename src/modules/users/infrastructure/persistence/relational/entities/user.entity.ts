@@ -130,11 +130,11 @@ export class UserEntity extends EntityRelationalHelper {
   status?: StatusEntity;
 
   @ApiProperty()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @ApiProperty()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
   @ApiProperty()

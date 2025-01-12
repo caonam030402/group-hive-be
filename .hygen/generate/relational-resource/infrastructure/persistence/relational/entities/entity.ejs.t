@@ -19,10 +19,10 @@ export class <%= name %>Entity extends EntityRelationalHelper {
   id: string;
 
   @ApiProperty()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @ApiProperty()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 }

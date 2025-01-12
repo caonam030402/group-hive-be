@@ -44,6 +44,6 @@ export class MessageEntity {
 
   @ApiProperty()
   @Index()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   sentAt: Date;
 }

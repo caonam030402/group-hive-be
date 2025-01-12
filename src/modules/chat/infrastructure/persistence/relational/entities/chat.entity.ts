@@ -30,7 +30,7 @@ export class ChatEntity {
   @OneToMany(() => UserChatEntity, (userChat) => userChat.chat, {
     cascade: true,
   })
-  userChats: UserChatEntity[];
+  userChats?: UserChatEntity[];
 
   @ApiProperty()
   @OneToOne(() => MessageEntity, {
@@ -53,10 +53,10 @@ export class ChatEntity {
   avatar: string;
 
   @ApiProperty()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @ApiProperty()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 }

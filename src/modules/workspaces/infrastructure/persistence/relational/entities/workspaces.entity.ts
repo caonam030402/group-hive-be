@@ -69,11 +69,11 @@ export class WorkspacesEntity extends EntityRelationalHelper {
   members: UserWorkspaceEntity[];
 
   @ApiProperty()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @ApiProperty()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
   @BeforeInsert()

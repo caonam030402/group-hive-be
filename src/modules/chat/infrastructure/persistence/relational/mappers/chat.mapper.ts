@@ -1,6 +1,7 @@
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
 import { WorkspacesMapper } from '../../../../../workspaces/infrastructure/persistence/relational/mappers/workspaces.mapper';
 import { Chat } from '../../../../domain/chat';
+import { UserChat } from '../../../../domain/user-chat';
 import { ChatEntity, UserChatEntity } from '../entities';
 import { MessageMapper } from './message.mapper';
 
@@ -13,7 +14,17 @@ export class ChatMapper {
     domainEntity.chatType = raw.chatType;
     domainEntity.name = raw.name;
     domainEntity.lastMessage = MessageMapper.toDomain(raw.lastMessage);
-
+    console.log(raw.userChats);
+    if (raw.userChats) {
+      domainEntity.userChats = raw.userChats.map((userChat) => {
+        const userChatEntity = new UserChat();
+        if (userChat.user) {
+          userChatEntity.user = UserMapper.toDomain(userChat.user);
+        }
+        return userChatEntity;
+      });
+    }
+    console.log(domainEntity);
     return domainEntity;
   }
 
