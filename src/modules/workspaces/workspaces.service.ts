@@ -41,7 +41,7 @@ export class WorkspacesService {
       });
     }
 
-    return this.workspacesRepository.create(createWorkspacesDto);
+    return this.workspacesRepository.create(createWorkspacesDto, ownerId);
   }
 
   findAllWithPagination({

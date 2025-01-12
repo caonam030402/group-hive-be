@@ -7,6 +7,8 @@ import { Workspaces } from '../../../../domain/workspaces';
 import { WorkspacesRepository } from '../../workspaces.repository';
 import { WorkspacesMapper } from '../mappers/workspaces.mapper';
 import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
+import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
+import { UserWorkspaceEntity } from '../entities/user-workspace.entity';
 
 @Injectable()
 export class WorkspacesRelationalRepository implements WorkspacesRepository {
@@ -15,8 +17,17 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
     private readonly workspacesRepository: Repository<WorkspacesEntity>,
   ) {}
 
-  async create(data: Workspaces): Promise<Workspaces> {
-    const persistenceModel = WorkspacesMapper.toPersistence(data);
+  async create(data: Workspaces, ownerId: number): Promise<Workspaces> {
+    const user = new UserEntity();
+    const userWorkspace = new UserWorkspaceEntity();
+
+    user.id = ownerId;
+    userWorkspace.user = user;
+
+    const persistenceModel = WorkspacesMapper.toPersistence({
+      ...data,
+      members: [userWorkspace],
+    });
     const newEntity = await this.workspacesRepository.save(
       this.workspacesRepository.create(persistenceModel),
     );
@@ -46,6 +57,7 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
           id: ownerId,
         },
       },
+      relations: ['members'],
     });
 
     return entities.map((entity) => WorkspacesMapper.toDomain(entity));
@@ -59,7 +71,7 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
     name: string;
   }): Promise<NullableType<Workspaces>> {
     const entity = await this.workspacesRepository.findOne({
-      relations: ['owner'],
+      relations: ['owner', 'members'],
       where: {
         name: name,
         owner: {
@@ -67,7 +79,7 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
         },
       },
     });
-    return entity;
+    return entity ? WorkspacesMapper.toDomain(entity) : null;
   }
 
   async findById(id: Workspaces['id']): Promise<NullableType<Workspaces>> {

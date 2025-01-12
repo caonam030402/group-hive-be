@@ -4,9 +4,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +13,7 @@ import { EntityRelationalHelper } from '../../../../../../utils/relational-entit
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { generateAvatar } from '../../../../../../utils/avatart-default';
+import { UserWorkspaceEntity } from './user-workspace.entity';
 
 @Entity({
   name: 'workspaces',
@@ -57,13 +57,16 @@ export class WorkspacesEntity extends EntityRelationalHelper {
   owner: UserEntity;
 
   @ApiProperty({
-    type: () => [UserEntity],
+    type: () => [UserWorkspaceEntity],
   })
-  @ManyToMany(() => UserEntity, {
-    eager: true,
-  })
-  @JoinTable({ name: 'user_workspace' })
-  members: UserEntity[];
+  @OneToMany(
+    () => UserWorkspaceEntity,
+    (userWorkspace) => userWorkspace.workspace,
+    {
+      cascade: true,
+    },
+  )
+  members: UserWorkspaceEntity[];
 
   @ApiProperty()
   @CreateDateColumn()

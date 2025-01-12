@@ -1,4 +1,6 @@
+import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
 import { Workspaces } from '../../../../domain/workspaces';
+import { UserWorkspaceEntity } from '../entities/user-workspace.entity';
 import { WorkspacesEntity } from '../entities/workspaces.entity';
 
 export class WorkspacesMapper {
@@ -31,7 +33,19 @@ export class WorkspacesMapper {
     persistenceEntity.size = domainEntity.size;
     persistenceEntity.region = domainEntity.region;
     persistenceEntity.description = domainEntity?.description;
-    persistenceEntity.members = domainEntity.members;
+    if (domainEntity?.members) {
+      persistenceEntity.members = domainEntity.members.map((userWorkspace) => {
+        const userWorkspaceEntity = new UserWorkspaceEntity();
+
+        if (userWorkspace.user) {
+          userWorkspaceEntity.user = UserMapper.toPersistence(
+            userWorkspace.user,
+          );
+        }
+        return userWorkspaceEntity;
+      });
+      persistenceEntity.members = domainEntity.members;
+    }
     persistenceEntity.avatar = domainEntity?.avatar;
     persistenceEntity.owner = domainEntity.owner;
 

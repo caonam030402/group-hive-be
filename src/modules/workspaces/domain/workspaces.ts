@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../../users/infrastructure/persistence/relational/entities/user.entity';
+import { UserWorkspaceEntity } from '../infrastructure/persistence/relational/entities/user-workspace.entity';
 
 export class Workspaces {
   @ApiProperty({
@@ -39,9 +40,9 @@ export class Workspaces {
   owner: UserEntity;
 
   @ApiProperty({
-    type: [UserEntity],
+    type: [UserWorkspaceEntity],
   })
-  members: UserEntity[];
+  members: UserWorkspaceEntity[];
 
   @ApiProperty()
   createdAt: Date;

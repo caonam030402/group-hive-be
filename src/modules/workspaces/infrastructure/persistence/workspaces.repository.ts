@@ -9,6 +9,7 @@ export abstract class WorkspacesRepository {
       Workspaces,
       'id' | 'createdAt' | 'updatedAt' | 'description' | 'avatar' | 'members'
     >,
+    ownerId: number,
   ): Promise<Workspaces>;
 
   abstract findAllWithPagination({
