@@ -13,7 +13,6 @@ export class MessageMapper {
     domainEntity.content = raw.content;
     domainEntity.status = raw.status;
     domainEntity.user = raw.user;
-    domainEntity.group = raw.group;
     domainEntity.type = raw.type;
     domainEntity.sentAt = raw.sentAt;
 
@@ -29,7 +28,6 @@ export class MessageMapper {
       persistenceEntity.chat = ChatMapper.toPersistence(domainEntity.chat);
     }
     persistenceEntity.content = domainEntity.content;
-    persistenceEntity.group = domainEntity.group;
     persistenceEntity.sentAt = domainEntity.sentAt;
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.type = domainEntity.type;

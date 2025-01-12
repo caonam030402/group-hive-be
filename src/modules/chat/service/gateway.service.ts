@@ -10,6 +10,7 @@ import { UserEntity } from '../../users/infrastructure/persistence/relational/en
 import { Chat } from '../domain/chat';
 import { MessageService } from './messge.service';
 import { ChatGatewaySubscribeKeys } from '../enum/gateway.enum';
+import { ChatType } from '../enum/chat.enum';
 
 @Injectable()
 export class ChatGatewayService {
@@ -58,6 +59,7 @@ export class ChatGatewayService {
     // create new chat when first message
     if (body.isFirst) {
       const newChat = new Chat();
+      newChat.chatType = ChatType.PRIVATE;
       newChat.userChats = [
         {
           user: { id: user.id } as UserEntity,

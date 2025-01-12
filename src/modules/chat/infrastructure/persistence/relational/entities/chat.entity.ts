@@ -10,6 +10,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { MessageEntity } from './message.entity';
 import { UserChatEntity } from './user-chat.entity';
+import { ChatType } from '../../../../enum/chat.enum';
 
 @Entity('chats')
 export class ChatEntity {
@@ -30,6 +31,12 @@ export class ChatEntity {
     cascade: true,
   })
   userChats: UserChatEntity[];
+
+  @ApiProperty({
+    enum: ChatType,
+  })
+  @Column()
+  chatType: ChatType;
 
   @ApiProperty()
   @CreateDateColumn()
