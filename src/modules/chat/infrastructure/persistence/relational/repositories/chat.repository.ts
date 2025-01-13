@@ -87,8 +87,13 @@ export class ChatRelationalRepository implements ChatRepository {
   async findById(id: Chat['id']): Promise<NullableType<Chat>> {
     const entity = await this.chatRepository.findOne({
       where: { id },
+      relations: {
+        userChats: {
+          user: true,
+        },
+        messages: true,
+      },
     });
-
     return entity ? ChatMapper.toDomain(entity) : null;
   }
 

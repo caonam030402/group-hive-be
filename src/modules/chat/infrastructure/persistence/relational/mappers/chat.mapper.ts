@@ -23,7 +23,6 @@ export class ChatMapper {
     if (domainEntity.messages) {
       domainEntity.lastMessage = domainEntity.messages[0];
     }
-
     if (raw.userChats) {
       domainEntity.userChats = raw.userChats.map((userChat) => {
         const userChatEntity = new UserChat();
