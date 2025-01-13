@@ -6,7 +6,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -33,11 +32,8 @@ export class ChatEntity {
   userChats?: UserChatEntity[];
 
   @ApiProperty()
-  @OneToOne(() => MessageEntity, {
-    eager: true,
-  })
-  @JoinColumn()
-  lastMessage: MessageEntity;
+  @OneToMany(() => MessageEntity, (message) => message.chat)
+  messages: MessageEntity[];
 
   @ApiProperty()
   @ManyToOne(() => WorkspacesEntity)

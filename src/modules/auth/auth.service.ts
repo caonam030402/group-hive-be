@@ -200,7 +200,6 @@ export class AuthService {
   }
 
   async register(dto: AuthRegisterLoginDto) {
-    console.log('dto', dto);
     const user = await this.usersService.create({
       ...dto,
       email: dto.email,

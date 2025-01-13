@@ -17,9 +17,9 @@ export class Chat {
   name: string;
 
   @ApiProperty({
-    type: () => Message,
+    type: () => [Message],
   })
-  messages: Message;
+  messages?: Message[];
 
   @ApiProperty({
     type: () => Message,

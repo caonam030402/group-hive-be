@@ -63,10 +63,15 @@ export class ChatRelationalRepository implements ChatRepository {
     );
 
     queryBuilder
-      .leftJoinAndSelect('chat.lastMessage', 'lastMessage')
-      .leftJoinAndSelect('lastMessage.user', 'userLastMessage')
       .leftJoinAndSelect('chat.userChats', 'userChats')
-      .leftJoinAndSelect('userChats.user', 'userChat')
+      .leftJoinAndSelect('userChats.user', 'userChat');
+
+    queryBuilder
+      .leftJoinAndSelect('chat.messages', 'messages')
+      .orderBy('messages.sentAt', 'DESC')
+      .leftJoinAndSelect('messages.user', 'user');
+
+    queryBuilder
       .take(paginationOptions.limit)
       .skip((paginationOptions.page - 1) * paginationOptions.limit);
 
