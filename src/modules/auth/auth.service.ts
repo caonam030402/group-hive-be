@@ -210,7 +210,6 @@ export class AuthService {
       status: {
         id: StatusEnum.inactive,
       },
-
       isVerified: VerifiedEnum.Unverified,
     });
 

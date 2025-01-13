@@ -13,19 +13,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { MessageStatus, MessageType } from '../../../../enum/message.enum';
 
 @Entity('messages')
-@Index(['chat', 'sentAt'])
 export class MessageEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty()
-  @Index()
   @ManyToOne(() => UserEntity)
   @JoinColumn()
   user: UserEntity;
 
   @ApiProperty()
-  @Index()
   @ManyToOne(() => ChatEntity, { nullable: true })
   @JoinColumn()
   chat?: ChatEntity;

@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 import {
   BeforeInsert,
   Column,
@@ -41,6 +43,10 @@ export class WorkspacesEntity extends EntityRelationalHelper {
 
   @ApiProperty()
   @Column({ nullable: true })
+  inviteCode?: string;
+
+  @ApiProperty()
+  @Column({ nullable: true })
   description: string;
 
   @ApiProperty()
@@ -77,9 +83,11 @@ export class WorkspacesEntity extends EntityRelationalHelper {
   updatedAt: Date;
 
   @BeforeInsert()
-  public setDefaultAvatar() {
+  public setDefault() {
     if (!this.avatar) {
       this.avatar = generateAvatar({ name: this.name });
     }
+
+    this.inviteCode = randomBytes(4).toString('hex').toUpperCase();
   }
 }
