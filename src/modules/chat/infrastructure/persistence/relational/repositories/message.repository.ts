@@ -60,6 +60,8 @@ export class MessageRelationalRepository implements MessageRepository {
       (order.direction?.toUpperCase() as 'ASC' | 'DESC') ?? 'ASC',
     );
 
+    queryBuilder.leftJoinAndSelect('message.user', 'user');
+
     queryBuilder.skip((paginationOptions.page - 1) * paginationOptions.limit);
     queryBuilder.take(paginationOptions.limit);
 

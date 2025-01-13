@@ -21,6 +21,21 @@ export class ChatGatewayService {
     private readonly messageService: MessageService,
     private readonly workspaceService: WorkspacesService,
   ) {}
+
+  private userMessageTracker: Map<string, number> = new Map();
+
+  private isUserSendingConsecutiveMessages(userId: string): boolean {
+    const currentTime = Date.now();
+    const lastMessageTime = this.userMessageTracker.get(userId);
+
+    if (!lastMessageTime) {
+      return false;
+    }
+
+    const timeDifference = currentTime - lastMessageTime;
+    return timeDifference < 3000;
+  }
+
   async sendMessagePrivateService({
     recipientId,
     body,
@@ -58,8 +73,10 @@ export class ChatGatewayService {
       content: body.content,
     };
 
+    const findChat = await this.chatService.findOne(body.chatId);
+
     // create new chat when first message
-    if (body.isFirst) {
+    if (!findChat) {
       const newWorkspace = await this.workspaceService.findOne(
         body.workspaceId,
       );

@@ -4,6 +4,7 @@ import { Chat } from '../../../../domain/chat';
 import { UserChat } from '../../../../domain/user-chat';
 import { ChatEntity, UserChatEntity } from '../entities';
 import { MessageMapper } from './message.mapper';
+// import { MessageMapper } from './message.mapper';
 
 export class ChatMapper {
   static toDomain(raw: ChatEntity): Chat {
@@ -13,8 +14,15 @@ export class ChatMapper {
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.chatType = raw.chatType;
     domainEntity.name = raw.name;
-    domainEntity.lastMessage = MessageMapper.toDomain(raw.lastMessage);
-    console.log(raw.userChats);
+    if (raw.messages) {
+      domainEntity.messages = raw.messages.map((message) => {
+        return MessageMapper.toDomain(message);
+      });
+    }
+
+    if (domainEntity.messages) {
+      domainEntity.lastMessage = domainEntity.messages[0];
+    }
     if (raw.userChats) {
       domainEntity.userChats = raw.userChats.map((userChat) => {
         const userChatEntity = new UserChat();
@@ -24,7 +32,8 @@ export class ChatMapper {
         return userChatEntity;
       });
     }
-    console.log(domainEntity);
+    delete domainEntity.messages;
+
     return domainEntity;
   }
 
