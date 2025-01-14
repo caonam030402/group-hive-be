@@ -7,6 +7,15 @@ import { MailerService } from '../mailer/mailer.service';
 import path from 'path';
 import { AllConfigType } from '../../config/config.type';
 import { MaybeType } from '../../utils/types/maybe.type';
+import * as nodemailer from 'nodemailer';
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000;
+
+type SendMailOptionsWithTemplate = nodemailer.SendMailOptions & {
+  templatePath: string;
+  context: Record<string, unknown>;
+};
 
 @Injectable()
 export class MailService {
@@ -14,6 +23,79 @@ export class MailService {
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService<AllConfigType>,
   ) {}
+
+  async sendEmailWithRetry(
+    mails: MailData,
+    email: string,
+    retries: number = MAX_RETRIES,
+  ): Promise<void> {
+    let attempts = 0;
+    let success = false;
+
+    while (attempts < retries && !success) {
+      try {
+        await this.mailerService.sendMail({ ...mails, to: email });
+        success = true;
+      } catch (error) {
+        attempts++;
+        console.error(
+          `Attempt ${attempts} failed for email ${email}: ${error.message}`,
+        );
+
+        if (attempts < retries) {
+          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+        }
+      }
+    }
+
+    if (!success) {
+      console.error(
+        `Failed to send email to ${email} after ${MAX_RETRIES} attempts`,
+      );
+    }
+  }
+
+  async sendBulkEmails(
+    emails: string[],
+    mails: SendMailOptionsWithTemplate,
+    batchSize: number = 10,
+  ): Promise<void> {
+    const sendBatch = async (batch: string[]) => {
+      const emailPromises = batch.map((email) =>
+        this.sendEmailWithRetry(mails, email),
+      );
+      await Promise.all(emailPromises);
+    };
+
+    const emailBatches: string[][] = [];
+    for (let i = 0; i < emails.length; i += batchSize) {
+      emailBatches.push(emails.slice(i, i + batchSize));
+    }
+
+    const batchPromises = emailBatches.map((batch) => sendBatch(batch));
+    await Promise.all(batchPromises);
+  }
+
+  async sendEmailInviteWorkspace(emails: string[]): Promise<void> {
+    await this.sendBulkEmails(emails, {
+      subject: 'Invite workspace',
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'src',
+        'modules',
+        'mail',
+        'mail-templates',
+        'invite-workspace.hbs',
+      ),
+      context: {
+        name: 'caonam',
+        inviteCode: '12312',
+        link: 'https://google.com',
+      },
+    });
+  }
 
   async userSignUp(mailData: MailData<{ hash: string }>): Promise<void> {
     const i18n = I18nContext.current();

@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Query,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { WorkspacesService } from './workspaces.service';
 import { CreateWorkspacesDto } from './dto/create-workspaces.dto';
@@ -29,6 +31,8 @@ import { infinityPagination } from '../../utils/infinity-pagination';
 import { FindAllWorkspacesDto } from './dto/find-all-workspaces.dto';
 import { CurrentUser } from '../../common/decorator/current-user.decorator';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
+import { MailService } from '../mail/mail.service';
+import { SendInviteMailDto } from './dto/send-invite-mail.dto';
 
 @ApiTags('Workspaces')
 @ApiBearerAuth()
@@ -38,7 +42,10 @@ import { UserEntity } from '../users/infrastructure/persistence/relational/entit
   version: '1',
 })
 export class WorkspacesController {
-  constructor(private readonly workspacesService: WorkspacesService) {}
+  constructor(
+    private readonly workspacesService: WorkspacesService,
+    private readonly mailService: MailService,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({
@@ -117,5 +124,11 @@ export class WorkspacesController {
   })
   remove(@Param('id') id: string) {
     return this.workspacesService.remove(id);
+  }
+
+  @Post('invite-send-mail')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  inviteSendMail(@Body() sendInviteMailDto: SendInviteMailDto) {
+    return this.mailService.sendEmailInviteWorkspace(sendInviteMailDto.emails);
   }
 }

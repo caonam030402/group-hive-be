@@ -1,0 +1,35 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>Invitation to Workspace</title>
+    <style>
+      body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin:
+      0; padding: 20px; } .container { max-width: 600px; margin: auto;
+      background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px
+      rgba(0, 0, 0, 0.1); } .header { text-align: center; margin-bottom: 20px; }
+      .footer { text-align: center; margin-top: 20px; font-size: 12px; color:
+      #888; } .button { display: inline-block; background-color: #007bff; color:
+      #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;
+      margin-top: 20px; }
+    </style>
+  </head>
+  <body>
+    <div class='container'>
+      <div class='header'>
+        <h1>You're Invited to Join Our Workspace</h1>
+      </div>
+      <p>Dear {{name}},</p>
+      <p>We are excited to invite you to join our workspace! Please use the
+        following invite code to complete your registration:</p>
+      <h2>{{inviteCode}}</h2>
+      <p>To get started, click the link below to join the workspace:</p>
+      <a href='{{link}}' class='button'>Join Now</a>
+      <p>If you did not request this invitation, please ignore this email.</p>
+      <div class='footer'>
+        <p>Thank you!</p>
+        <p>Your Company Name</p>
+      </div>
+    </div>
+  </body>
+</html>
