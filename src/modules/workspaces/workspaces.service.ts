@@ -8,6 +8,8 @@ import { UpdateWorkspacesDto } from './dto/update-workspaces.dto';
 import { WorkspacesRepository } from './infrastructure/persistence/workspaces.repository';
 import { IPaginationOptions } from '../../utils/types/pagination-options';
 import { Workspaces } from './domain/workspaces';
+import { createInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class WorkspacesService {
@@ -41,7 +43,17 @@ export class WorkspacesService {
       });
     }
 
-    return this.workspacesRepository.create(createWorkspacesDto, ownerId);
+    const workspace = await this.workspacesRepository.create(
+      createWorkspacesDto,
+      ownerId,
+    );
+    console.log(workspace);
+    await this.workspacesRepository.createInvite({
+      workspace: workspace,
+      expiredAt: dayjs().add(5, 'day').toDate(),
+    });
+
+    return workspace;
   }
 
   findAllWithPagination({
@@ -60,6 +72,21 @@ export class WorkspacesService {
     });
   }
 
+  createInvite(createInviteWorkspaceDto: createInviteWorkspacesDto) {
+    const isCheckTime = dayjs(createInviteWorkspaceDto.expiredAt).isBefore(
+      dayjs(),
+    );
+
+    if (isCheckTime) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: `The time has expired`,
+      });
+    }
+
+    return this.workspacesRepository.createInvite(createInviteWorkspaceDto);
+  }
+
   findOne(id: Workspaces['id']) {
     return this.workspacesRepository.findById(id);
   }
@@ -70,5 +97,9 @@ export class WorkspacesService {
 
   remove(id: Workspaces['id']) {
     return this.workspacesRepository.remove(id);
+  }
+
+  getInvite(idWorkspace: Workspaces['id']) {
+    return this.workspacesRepository.getInviteByWorkspaceId(idWorkspace);
   }
 }

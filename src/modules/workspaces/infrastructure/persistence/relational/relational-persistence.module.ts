@@ -4,9 +4,16 @@ import { WorkspacesRelationalRepository } from './repositories/workspaces.reposi
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WorkspacesEntity } from './entities/workspaces.entity';
 import { UserWorkspaceEntity } from './entities/user-workspace.entity';
+import { InviteWorkspacesEntity } from './entities/invite-workspaces.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WorkspacesEntity, UserWorkspaceEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      WorkspacesEntity,
+      UserWorkspaceEntity,
+      InviteWorkspacesEntity,
+    ]),
+  ],
   providers: [
     {
       provide: WorkspacesRepository,

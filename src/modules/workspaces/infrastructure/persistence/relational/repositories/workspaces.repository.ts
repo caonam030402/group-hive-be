@@ -9,12 +9,18 @@ import { WorkspacesMapper } from '../mappers/workspaces.mapper';
 import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { UserWorkspaceEntity } from '../entities/user-workspace.entity';
+import { InviteWorkspacesEntity } from '../entities/invite-workspaces.entity';
+import { InviteWorkspaces } from '../../../../domain/invite-workspaces';
+import { InviteWorkspacesMapper } from '../mappers/invite-workspaces-mapper';
 
 @Injectable()
 export class WorkspacesRelationalRepository implements WorkspacesRepository {
   constructor(
     @InjectRepository(WorkspacesEntity)
     private readonly workspacesRepository: Repository<WorkspacesEntity>,
+
+    @InjectRepository(InviteWorkspacesEntity)
+    private readonly inviteWorkspacesRepository: Repository<InviteWorkspacesEntity>,
   ) {}
 
   async create(data: Workspaces, ownerId: number): Promise<Workspaces> {
@@ -116,5 +122,24 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
 
   async remove(id: Workspaces['id']): Promise<void> {
     await this.workspacesRepository.delete(id);
+  }
+
+  async createInvite(data: InviteWorkspaces): Promise<InviteWorkspaces> {
+    const persistenceModel = InviteWorkspacesMapper.toPersistence(data);
+    const newEntity = await this.inviteWorkspacesRepository.save(
+      this.inviteWorkspacesRepository.create(persistenceModel),
+    );
+    return InviteWorkspacesMapper.toDomain(newEntity);
+  }
+  getInviteByWorkspaceId(
+    workspaceId: Workspaces['id'],
+  ): Promise<NullableType<InviteWorkspaces>> {
+    return this.inviteWorkspacesRepository.findOne({
+      where: {
+        workspace: {
+          id: workspaceId,
+        },
+      },
+    });
   }
 }

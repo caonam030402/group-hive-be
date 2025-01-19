@@ -33,6 +33,8 @@ import { CurrentUser } from '../../common/decorator/current-user.decorator';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 import { MailService } from '../mail/mail.service';
 import { SendInviteMailDto } from './dto/send-invite-mail.dto';
+import { createInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
+import { InviteWorkspaces } from './domain/invite-workspaces';
 
 @ApiTags('Workspaces')
 @ApiBearerAuth()
@@ -130,5 +132,20 @@ export class WorkspacesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   inviteSendMail(@Body() sendInviteMailDto: SendInviteMailDto) {
     return this.mailService.sendEmailInviteWorkspace(sendInviteMailDto.emails);
+  }
+
+  @Post('create-invite')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  createInvite(@Body() createInviteWorkspacesDto: createInviteWorkspacesDto) {
+    return this.workspacesService.createInvite(createInviteWorkspacesDto);
+  }
+
+  @Get('get-invite/:workspaceId')
+  @ApiOkResponse({
+    type: InviteWorkspaces,
+  })
+  getInvite(@Param('workspaceId') workspaceId: Workspaces['id']) {
+    console.log(this.workspacesService.getInvite(workspaceId));
+    return this.workspacesService.getInvite(workspaceId);
   }
 }

@@ -1,6 +1,7 @@
 import { DeepPartial } from '../../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../utils/types/pagination-options';
+import { InviteWorkspaces } from '../../domain/invite-workspaces';
 import { Workspaces } from '../../domain/workspaces';
 
 export abstract class WorkspacesRepository {
@@ -38,4 +39,12 @@ export abstract class WorkspacesRepository {
   ): Promise<Workspaces | null>;
 
   abstract remove(id: Workspaces['id']): Promise<void>;
+
+  abstract createInvite(
+    data: Pick<InviteWorkspaces, 'expiredAt' | 'workspace'>,
+  ): Promise<InviteWorkspaces>;
+
+  abstract getInviteByWorkspaceId(
+    workspaceId: Workspaces['id'],
+  ): Promise<NullableType<InviteWorkspaces>>;
 }
