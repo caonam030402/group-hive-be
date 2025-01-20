@@ -142,4 +142,22 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
       },
     });
   }
+
+  async updateInvite(data: InviteWorkspaces): Promise<void> {
+    const entity = await this.inviteWorkspacesRepository.findOne({
+      where: { workspace: { id: data.workspace.id } },
+    });
+    if (!entity) {
+      throw new Error('Record not found');
+    }
+    const persistenceModel = InviteWorkspacesMapper.toPersistence(entity);
+    persistenceModel.expiredAt = data.expiredAt;
+
+    await this.inviteWorkspacesRepository.update(
+      {
+        id: entity.id,
+      },
+      persistenceModel,
+    );
+  }
 }

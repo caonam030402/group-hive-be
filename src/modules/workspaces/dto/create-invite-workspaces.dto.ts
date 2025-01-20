@@ -3,7 +3,7 @@ import { Workspaces } from '../domain/workspaces';
 import { IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class createInviteWorkspacesDto {
+export class CreateInviteWorkspacesDto {
   @ApiProperty({ type: Date, nullable: true })
   @IsOptional()
   expiredAt: Date | null;

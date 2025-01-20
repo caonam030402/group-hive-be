@@ -10,6 +10,7 @@ import {
   Query,
   HttpStatus,
   HttpCode,
+  Put,
 } from '@nestjs/common';
 import { WorkspacesService } from './workspaces.service';
 import { CreateWorkspacesDto } from './dto/create-workspaces.dto';
@@ -33,8 +34,8 @@ import { CurrentUser } from '../../common/decorator/current-user.decorator';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 import { MailService } from '../mail/mail.service';
 import { SendInviteMailDto } from './dto/send-invite-mail.dto';
-import { createInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
 import { InviteWorkspaces } from './domain/invite-workspaces';
+import { CreateInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
 
 @ApiTags('Workspaces')
 @ApiBearerAuth()
@@ -134,13 +135,19 @@ export class WorkspacesController {
     return this.mailService.sendEmailInviteWorkspace(sendInviteMailDto.emails);
   }
 
-  @Post('create-invite')
+  @Post('invite')
   @HttpCode(HttpStatus.NO_CONTENT)
-  createInvite(@Body() createInviteWorkspacesDto: createInviteWorkspacesDto) {
+  createInvite(@Body() createInviteWorkspacesDto: CreateInviteWorkspacesDto) {
     return this.workspacesService.createInvite(createInviteWorkspacesDto);
   }
 
-  @Get('get-invite/:workspaceId')
+  @Put('invite')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  updateInvite(@Body() createInviteWorkspacesDto: CreateInviteWorkspacesDto) {
+    return this.workspacesService.updateInvite(createInviteWorkspacesDto);
+  }
+
+  @Get('invite/:workspaceId')
   @ApiOkResponse({
     type: InviteWorkspaces,
   })

@@ -47,4 +47,8 @@ export abstract class WorkspacesRepository {
   abstract getInviteByWorkspaceId(
     workspaceId: Workspaces['id'],
   ): Promise<NullableType<InviteWorkspaces>>;
+
+  abstract updateInvite(
+    data: Pick<InviteWorkspaces, 'expiredAt' | 'workspace'>,
+  ): Promise<void>;
 }

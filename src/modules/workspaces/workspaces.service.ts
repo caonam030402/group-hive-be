@@ -8,7 +8,7 @@ import { UpdateWorkspacesDto } from './dto/update-workspaces.dto';
 import { WorkspacesRepository } from './infrastructure/persistence/workspaces.repository';
 import { IPaginationOptions } from '../../utils/types/pagination-options';
 import { Workspaces } from './domain/workspaces';
-import { createInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
+import { CreateInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
 import dayjs from 'dayjs';
 
 @Injectable()
@@ -32,14 +32,14 @@ export class WorkspacesService {
     if (listWorkspace) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: `This name has been duplicated`,
+        message: `This name has been duplicated`,
       });
     }
 
     if (count > maxCount) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: `You can only create ${maxCount} workspaces`,
+        message: `You can only create ${maxCount} workspaces`,
       });
     }
 
@@ -47,7 +47,6 @@ export class WorkspacesService {
       createWorkspacesDto,
       ownerId,
     );
-    console.log(workspace);
     await this.workspacesRepository.createInvite({
       workspace: workspace,
       expiredAt: dayjs().add(5, 'day').toDate(),
@@ -72,21 +71,17 @@ export class WorkspacesService {
     });
   }
 
-  createInvite(createInviteWorkspaceDto: createInviteWorkspacesDto) {
-    const isCheckTime = dayjs(createInviteWorkspaceDto.expiredAt).isBefore(
-      dayjs(),
-    );
-
-    if (isCheckTime) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: `The time has expired`,
-      });
-    }
-
+  createInvite(createInviteWorkspaceDto: CreateInviteWorkspacesDto) {
+    this.checkTimeNewInvite(createInviteWorkspaceDto);
     return this.workspacesRepository.createInvite(createInviteWorkspaceDto);
   }
-
+  updateInvite(createInviteWorkspaceDto: CreateInviteWorkspacesDto) {
+    this.checkTimeNewInvite(createInviteWorkspaceDto);
+    return this.workspacesRepository.updateInvite({
+      workspace: createInviteWorkspaceDto.workspace,
+      expiredAt: dayjs().add(5, 'day').toDate(),
+    });
+  }
   findOne(id: Workspaces['id']) {
     return this.workspacesRepository.findById(id);
   }
@@ -101,5 +96,20 @@ export class WorkspacesService {
 
   getInvite(idWorkspace: Workspaces['id']) {
     return this.workspacesRepository.getInviteByWorkspaceId(idWorkspace);
+  }
+
+  private checkTimeNewInvite(
+    createInviteWorkspaceDto: CreateInviteWorkspacesDto,
+  ) {
+    const isCheckTime = dayjs(createInviteWorkspaceDto.expiredAt).isBefore(
+      dayjs(),
+    );
+
+    if (isCheckTime) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        message: `The time has expired`,
+      });
+    }
   }
 }

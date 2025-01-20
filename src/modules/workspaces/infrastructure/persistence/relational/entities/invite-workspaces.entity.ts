@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto';
 
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -51,6 +52,7 @@ export class InviteWorkspacesEntity extends EntityRelationalHelper {
   workspace: WorkspacesEntity;
 
   @BeforeInsert()
+  @BeforeUpdate()
   public setDefault() {
     this.inviteCode = randomBytes(4).toString('hex').toUpperCase();
     const nameFormat = this.workspace.name.replace(/\s/g, '');
