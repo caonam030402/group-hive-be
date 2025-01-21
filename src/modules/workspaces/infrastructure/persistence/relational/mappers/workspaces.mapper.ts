@@ -23,7 +23,6 @@ export class WorkspacesMapper {
 
   static toPersistence(domainEntity: Workspaces): WorkspacesEntity {
     const persistenceEntity = new WorkspacesEntity();
-    console.log(domainEntity?.id, 'domainEntity?.id');
     if (domainEntity?.id) {
       persistenceEntity.id = domainEntity?.id;
     }

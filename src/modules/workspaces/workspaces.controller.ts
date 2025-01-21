@@ -152,7 +152,6 @@ export class WorkspacesController {
     type: InviteWorkspaces,
   })
   getInvite(@Param('workspaceId') workspaceId: Workspaces['id']) {
-    console.log(this.workspacesService.getInvite(workspaceId));
     return this.workspacesService.getInvite(workspaceId);
   }
 }
