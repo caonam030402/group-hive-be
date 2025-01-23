@@ -18,7 +18,7 @@ export class UserWorkspaceEntity extends EntityRelationalHelper {
   user: UserEntity;
 
   @ApiProperty()
-  @ManyToOne(() => WorkspacesEntity)
+  @ManyToOne(() => WorkspacesEntity, (workspace) => workspace.members)
   @JoinColumn()
   workspace: WorkspacesEntity;
 }

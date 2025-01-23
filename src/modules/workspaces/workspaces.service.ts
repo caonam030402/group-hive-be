@@ -10,6 +10,7 @@ import { IPaginationOptions } from '../../utils/types/pagination-options';
 import { Workspaces } from './domain/workspaces';
 import { CreateInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
 import dayjs from 'dayjs';
+import { JoinWorkspaceDto } from './dto/join-workspace.dto';
 
 @Injectable()
 export class WorkspacesService {
@@ -96,6 +97,23 @@ export class WorkspacesService {
 
   getInvite(idWorkspace: Workspaces['id']) {
     return this.workspacesRepository.getInviteByWorkspaceId(idWorkspace);
+  }
+
+  async joinWorkspace(joinWorkspaceDto: JoinWorkspaceDto) {
+    const userWorkspace = await this.workspacesRepository.findOneWorkspaceUser({
+      workspaceId: joinWorkspaceDto.workspaceId,
+      userId: joinWorkspaceDto.userId,
+    });
+    if (userWorkspace) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        message: `You have already joined this`,
+      });
+    }
+    return this.workspacesRepository.joinWorkspace({
+      workspaceId: joinWorkspaceDto.workspaceId,
+      userId: joinWorkspaceDto.userId,
+    });
   }
 
   private checkTimeNewInvite(

@@ -36,6 +36,7 @@ import { MailService } from '../mail/mail.service';
 import { SendInviteMailDto } from './dto/send-invite-mail.dto';
 import { InviteWorkspaces } from './domain/invite-workspaces';
 import { CreateInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
+import { JoinWorkspaceDto } from './dto/join-workspace.dto';
 
 @ApiTags('Workspaces')
 @ApiBearerAuth()
@@ -153,5 +154,11 @@ export class WorkspacesController {
   })
   getInvite(@Param('workspaceId') workspaceId: Workspaces['id']) {
     return this.workspacesService.getInvite(workspaceId);
+  }
+
+  @Post('join')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  joinWorkspace(@Body() joinWorkspaceDto: JoinWorkspaceDto) {
+    return this.workspacesService.joinWorkspace(joinWorkspaceDto);
   }
 }

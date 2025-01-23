@@ -12,12 +12,16 @@ import { UserWorkspaceEntity } from '../entities/user-workspace.entity';
 import { InviteWorkspacesEntity } from '../entities/invite-workspaces.entity';
 import { InviteWorkspaces } from '../../../../domain/invite-workspaces';
 import { InviteWorkspacesMapper } from '../mappers/invite-workspaces-mapper';
+import { UserWorkspace } from '../../../../domain/user-workspaces';
 
 @Injectable()
 export class WorkspacesRelationalRepository implements WorkspacesRepository {
   constructor(
     @InjectRepository(WorkspacesEntity)
     private readonly workspacesRepository: Repository<WorkspacesEntity>,
+
+    @InjectRepository(UserWorkspaceEntity)
+    private readonly userWorkspaceEntity: Repository<UserWorkspaceEntity>,
 
     @InjectRepository(InviteWorkspacesEntity)
     private readonly inviteWorkspacesRepository: Repository<InviteWorkspacesEntity>,
@@ -159,5 +163,42 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
       },
       persistenceModel,
     );
+  }
+
+  async joinWorkspace({
+    workspaceId,
+    userId,
+  }: {
+    workspaceId: Workspaces['id'];
+    userId: number;
+  }): Promise<void> {
+    await this.userWorkspaceEntity.save({
+      user: {
+        id: userId,
+      },
+      workspace: {
+        id: workspaceId,
+      },
+    });
+  }
+
+  async findOneWorkspaceUser({
+    workspaceId,
+    userId,
+  }: {
+    workspaceId: Workspaces['id'];
+    userId: number;
+  }): Promise<NullableType<UserWorkspace>> {
+    const entity = await this.userWorkspaceEntity.findOne({
+      where: {
+        user: {
+          id: userId,
+        },
+        workspace: {
+          id: workspaceId,
+        },
+      },
+    });
+    return entity;
   }
 }

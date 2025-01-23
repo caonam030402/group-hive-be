@@ -2,6 +2,7 @@ import { DeepPartial } from '../../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../utils/types/pagination-options';
 import { InviteWorkspaces } from '../../domain/invite-workspaces';
+import { UserWorkspace } from '../../domain/user-workspaces';
 import { Workspaces } from '../../domain/workspaces';
 
 export abstract class WorkspacesRepository {
@@ -33,6 +34,14 @@ export abstract class WorkspacesRepository {
     name: string;
   }): Promise<NullableType<Workspaces>>;
 
+  abstract findOneWorkspaceUser({
+    workspaceId,
+    userId,
+  }: {
+    workspaceId: Workspaces['id'];
+    userId: number;
+  }): Promise<NullableType<UserWorkspace>>;
+
   abstract update(
     id: Workspaces['id'],
     payload: DeepPartial<Workspaces>,
@@ -51,4 +60,12 @@ export abstract class WorkspacesRepository {
   abstract updateInvite(
     data: Pick<InviteWorkspaces, 'expiredAt' | 'workspace'>,
   ): Promise<void>;
+
+  abstract joinWorkspace({
+    workspaceId,
+    userId,
+  }: {
+    workspaceId: Workspaces['id'];
+    userId: number;
+  }): Promise<void>;
 }
