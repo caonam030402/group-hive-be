@@ -13,6 +13,8 @@ import { InviteWorkspacesEntity } from '../entities/invite-workspaces.entity';
 import { InviteWorkspaces } from '../../../../domain/invite-workspaces';
 import { InviteWorkspacesMapper } from '../mappers/invite-workspaces-mapper';
 import { UserWorkspace } from '../../../../domain/user-workspaces';
+import { UserWorkspacesMapper } from '../mappers/user-workspaces.mapper';
+import { User } from '../../../../../users/domain/user';
 
 @Injectable()
 export class WorkspacesRelationalRepository implements WorkspacesRepository {
@@ -52,6 +54,43 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
     return count;
   }
 
+  async findAllMembersWithPagination({
+    paginationOptions,
+    workSpaceId,
+  }: {
+    paginationOptions: IPaginationOptions;
+    workSpaceId?: string;
+  }): Promise<User[]> {
+    const entities = await this.userWorkspaceEntity.find({
+      skip: (paginationOptions.page - 1) * paginationOptions.limit,
+      take: paginationOptions.limit,
+      where: {
+        workspace: {
+          id: workSpaceId,
+        },
+      },
+      relations: ['user', 'workspace'],
+    });
+    return (
+      entities &&
+      entities.map((entity) => UserWorkspacesMapper.toDomain(entity).user)
+    );
+  }
+
+  async findByUserId(userId: number): Promise<Workspaces[]> {
+    const entities = await this.workspacesRepository.find({
+      relations: ['members'],
+      where: {
+        members: {
+          user: {
+            id: userId,
+          },
+        },
+      },
+    });
+    return entities.map((entity) => WorkspacesMapper.toDomain(entity));
+  }
+
   async findAllWithPagination({
     paginationOptions,
     ownerId,
@@ -62,14 +101,15 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
     const entities = await this.workspacesRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      relations: ['members'],
       where: {
-        owner: {
-          id: ownerId,
+        members: {
+          user: {
+            id: ownerId,
+          },
         },
       },
-      relations: ['members'],
     });
-
     return entities.map((entity) => WorkspacesMapper.toDomain(entity));
   }
 

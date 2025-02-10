@@ -1,6 +1,7 @@
 import { DeepPartial } from '../../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../utils/types/pagination-options';
+import { User } from '../../../users/domain/user';
 import { InviteWorkspaces } from '../../domain/invite-workspaces';
 import { UserWorkspace } from '../../domain/user-workspaces';
 import { Workspaces } from '../../domain/workspaces';
@@ -9,7 +10,13 @@ export abstract class WorkspacesRepository {
   abstract create(
     data: Omit<
       Workspaces,
-      'id' | 'createdAt' | 'updatedAt' | 'description' | 'avatar' | 'members'
+      | 'id'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'description'
+      | 'avatar'
+      | 'members'
+      | 'quantityMembers'
     >,
     ownerId: number,
   ): Promise<Workspaces>;
@@ -21,6 +28,14 @@ export abstract class WorkspacesRepository {
     paginationOptions: IPaginationOptions;
     ownerId?: number;
   }): Promise<Workspaces[]>;
+
+  abstract findAllMembersWithPagination({
+    paginationOptions,
+    workSpaceId,
+  }: {
+    paginationOptions: IPaginationOptions;
+    workSpaceId?: string;
+  }): Promise<User[]>;
 
   abstract findById(id: Workspaces['id']): Promise<NullableType<Workspaces>>;
 
@@ -68,4 +83,6 @@ export abstract class WorkspacesRepository {
     workspaceId: Workspaces['id'];
     userId: number;
   }): Promise<void>;
+
+  abstract findByUserId(userId: number): Promise<Workspaces[]>;
 }

@@ -35,6 +35,11 @@ export class Workspaces {
   description: string;
 
   @ApiProperty({
+    type: Number,
+  })
+  quantityMembers: number;
+
+  @ApiProperty({
     type: UserEntity,
   })
   owner: UserEntity;

@@ -37,6 +37,8 @@ import { SendInviteMailDto } from './dto/send-invite-mail.dto';
 import { InviteWorkspaces } from './domain/invite-workspaces';
 import { CreateInviteWorkspacesDto } from './dto/create-invite-workspaces.dto';
 import { JoinWorkspaceDto } from './dto/join-workspace.dto';
+import { FindAllMemberDto } from './dto/find-all-member.dto';
+import { UserWorkspace } from './domain/user-workspaces';
 
 @ApiTags('Workspaces')
 @ApiBearerAuth()
@@ -63,6 +65,30 @@ export class WorkspacesController {
       createWorkspacesDto,
       ownerId: user.id,
     });
+  }
+
+  @Get('members')
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(UserWorkspace),
+  })
+  async findAllMembers(@Query() query: FindAllMemberDto) {
+    console.log(query);
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+
+    return infinityPagination(
+      await this.workspacesService.findAllMembersWithPagination({
+        workSpaceId: query.workspaceId,
+        paginationOptions: {
+          page,
+          limit,
+        },
+      }),
+      { page, limit },
+    );
   }
 
   @Get()
@@ -160,5 +186,13 @@ export class WorkspacesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   joinWorkspace(@Body() joinWorkspaceDto: JoinWorkspaceDto) {
     return this.workspacesService.joinWorkspace(joinWorkspaceDto);
+  }
+
+  @Get('me')
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(Workspaces),
+  })
+  findByUserId(@CurrentUser() user: UserEntity) {
+    return this.workspacesService.findByUserId(user.id);
   }
 }

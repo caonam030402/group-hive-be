@@ -17,6 +17,7 @@ export class WorkspacesMapper {
     domainEntity.members = raw.members;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.quantityMembers = raw.quantityMembers;
 
     return domainEntity;
   }
@@ -33,6 +34,7 @@ export class WorkspacesMapper {
     persistenceEntity.size = domainEntity?.size;
     persistenceEntity.region = domainEntity?.region;
     persistenceEntity.description = domainEntity?.description;
+    persistenceEntity.quantityMembers = domainEntity?.quantityMembers;
     if (domainEntity?.members) {
       persistenceEntity.members = domainEntity?.members.map((userWorkspace) => {
         const userWorkspaceEntity = new UserWorkspaceEntity();

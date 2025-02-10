@@ -72,10 +72,10 @@ export class ChatGatewayService {
       type: body.type,
       content: body.content,
     };
-
-    const findChat = await this.chatService.findOne(body.chatId);
-
+    const findChat =
+      body.chatId && (await this.chatService.findOne(body.chatId));
     // create new chat when first message
+
     if (!findChat) {
       const newWorkspace = await this.workspaceService.findOne(
         body.workspaceId,

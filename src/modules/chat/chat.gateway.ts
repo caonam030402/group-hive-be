@@ -30,7 +30,7 @@ import { ChatGatewayService } from './service/gateway.service';
 @UsePipes(new ValidationPipe())
 @UseGuards(WsAuthGuard)
 @UseFilters(BaseWsExceptionFilter)
-@WebSocketGateway(3001, { cors: { origin: '*' } })
+@WebSocketGateway(3002, { cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private readonly logger = new Logger('ChatGateway');
@@ -57,7 +57,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           id: user?.id,
         } as UserEntity,
       });
+      console.log(user, 'user');
     } catch (error) {
+      console.log(error);
       this.handleConnectionError(socket, error);
     }
   }

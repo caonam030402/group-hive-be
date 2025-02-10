@@ -1,5 +1,6 @@
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -56,6 +57,10 @@ export class WorkspacesEntity extends EntityRelationalHelper {
   @JoinColumn()
   owner: UserEntity;
 
+  @ApiProperty()
+  @Column({ nullable: true, default: 1 })
+  quantityMembers: number;
+
   @ApiProperty({
     type: () => [UserWorkspaceEntity],
   })
@@ -81,5 +86,11 @@ export class WorkspacesEntity extends EntityRelationalHelper {
     if (!this.avatar) {
       this.avatar = generateAvatar({ name: this.name });
     }
+  }
+
+  @BeforeUpdate()
+  public setDefaultAvatar() {
+    console.log(this.members);
+    this.quantityMembers = this.members.length;
   }
 }

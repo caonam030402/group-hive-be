@@ -56,6 +56,10 @@ export class WorkspacesService {
     return workspace;
   }
 
+  findByUserId(userId: number) {
+    return this.workspacesRepository.findByUserId(userId);
+  }
+
   findAllWithPagination({
     ownerId,
     paginationOptions,
@@ -65,6 +69,22 @@ export class WorkspacesService {
   }) {
     return this.workspacesRepository.findAllWithPagination({
       ownerId,
+      paginationOptions: {
+        page: paginationOptions.page,
+        limit: paginationOptions.limit,
+      },
+    });
+  }
+
+  findAllMembersWithPagination({
+    workSpaceId,
+    paginationOptions,
+  }: {
+    paginationOptions: IPaginationOptions;
+    workSpaceId?: string;
+  }) {
+    return this.workspacesRepository.findAllMembersWithPagination({
+      workSpaceId: workSpaceId,
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,

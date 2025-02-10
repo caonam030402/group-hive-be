@@ -9,8 +9,12 @@ export class UserWorkspacesMapper {
     if (raw.id) {
       domainEntity.id = raw.id;
     }
-    domainEntity.user = UserMapper.toDomain(raw.user);
-    domainEntity.workspace = WorkspacesMapper.toDomain(raw.workspace);
+    if (raw.user) {
+      domainEntity.user = UserMapper.toDomain(raw.user);
+    }
+    if (raw.workspace) {
+      domainEntity.workspace = WorkspacesMapper.toDomain(raw.workspace);
+    }
 
     return domainEntity;
   }

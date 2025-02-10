@@ -39,9 +39,9 @@ export class UsersService {
         clonedPayload.email,
       );
 
-      if (userObject?.isVerified === VerifiedEnum.Unverified) {
-        return userObject;
-      }
+      // if (userObject?.isVerified === VerifiedEnum.Unverified) {
+      //   return userObject;
+      // }
 
       if (userObject) {
         throw new UnprocessableEntityException({

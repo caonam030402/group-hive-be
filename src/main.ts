@@ -23,6 +23,8 @@ async function bootstrap() {
   await redisIoAdapter.connectToRedis();
 
   app.useWebSocketAdapter(redisIoAdapter);
+  const socketPort = 3001;
+  redisIoAdapter.createIOServer(socketPort);
 
   app.enableShutdownHooks();
   app.setGlobalPrefix(
