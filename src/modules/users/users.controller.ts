@@ -37,7 +37,7 @@ import { RolesGuard } from '../roles/roles.guard';
 import { infinityPagination } from '../../utils/infinity-pagination';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.admin)
+@Roles(RoleEnum.user)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Users')
 @Controller({
@@ -91,9 +91,6 @@ export class UsersController {
 
   @ApiOkResponse({
     type: User,
-  })
-  @SerializeOptions({
-    groups: ['admin'],
   })
   @Get(':id')
   @HttpCode(HttpStatus.OK)

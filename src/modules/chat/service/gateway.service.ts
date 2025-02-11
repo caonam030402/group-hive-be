@@ -80,6 +80,7 @@ export class ChatGatewayService {
       const newWorkspace = await this.workspaceService.findOne(
         body.workspaceId,
       );
+
       const newChat = new Chat();
       newWorkspace!.id = body.workspaceId;
       newChat.chatType = ChatType.PRIVATE;
