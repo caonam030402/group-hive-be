@@ -6,16 +6,8 @@ import { IQueryOptions } from '../../../../utils/types/query-options';
 
 export abstract class ChatRepository {
   abstract create(
-    data: Omit<
-      Chat,
-      | 'id'
-      | 'createdAt'
-      | 'updatedAt'
-      | 'name'
-      | 'messages'
-      | 'userChats'
-      | 'lastMessage'
-    >,
+    data: Pick<Chat, 'chatType' | 'userChats' | 'workspace'>,
+    hasCheck: boolean,
   ): Promise<Chat>;
 
   abstract findAllWithPagination({

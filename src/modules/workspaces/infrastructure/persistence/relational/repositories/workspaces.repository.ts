@@ -71,6 +71,7 @@ export class WorkspacesRelationalRepository implements WorkspacesRepository {
       },
       relations: ['user', 'workspace'],
     });
+
     return (
       entities &&
       entities.map((entity) => UserWorkspacesMapper.toDomain(entity).user)

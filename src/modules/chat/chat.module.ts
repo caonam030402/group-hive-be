@@ -5,7 +5,7 @@ import { ChatService } from './service/chat.service';
 import { ChatGateway } from './chat.gateway';
 import { ConnectedUserService } from './service/connected-user.service';
 import { AuthModule } from '../auth/auth.module';
-import { MessageService } from './service/messge.service';
+import { MessageService } from './service/message.service';
 import { ChatGatewayService } from './service/gateway.service';
 import { MessageController } from './controller/message.controller';
 import { WorkspacesModule } from '../workspaces/workspaces.module';

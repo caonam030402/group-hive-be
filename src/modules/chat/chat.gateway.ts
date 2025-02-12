@@ -51,13 +51,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const token = socket.handshake.headers['authorization'];
       const user = await this.jwtWsStrategy.validateJwtToken(token);
       if (!user) return socket.disconnect();
-      await this.connectedUserService.create({
-        socketId: socket.id,
-        user: {
-          id: user?.id,
-        } as UserEntity,
-      });
-      console.log(user, 'user');
+      const findSocketId = await this.connectedUserService.findByUserId(
+        user.id,
+      );
+      if (!findSocketId) {
+        await this.connectedUserService.create({
+          socketId: socket.id,
+          user: {
+            id: user?.id,
+          } as UserEntity,
+        });
+      }
     } catch (error) {
       console.log(error);
       this.handleConnectionError(socket, error);
@@ -86,10 +90,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       body,
       user,
       server: this.server,
-    });
-    await this.chatGatewayService.sendMessagePrivateUpdateDbService({
-      body,
-      user,
     });
   }
 

@@ -5,7 +5,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { FindAllMessageDto } from '../dto/find-all-messages.dto';
 import { Message } from '../domain/message';
-import { MessageService } from '../service/messge.service';
+import { MessageService } from '../service/message.service';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,

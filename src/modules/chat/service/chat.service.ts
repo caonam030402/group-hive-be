@@ -11,7 +11,7 @@ export class ChatService {
   constructor(private readonly chatRepository: ChatRepository) {}
 
   create(createChatDto: createChatDto) {
-    return this.chatRepository.create(createChatDto);
+    return this.chatRepository.create(createChatDto, createChatDto.hasCheck);
   }
 
   findAllWithPagination({

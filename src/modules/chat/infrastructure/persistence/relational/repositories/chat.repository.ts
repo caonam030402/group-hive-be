@@ -17,7 +17,29 @@ export class ChatRelationalRepository implements ChatRepository {
     private readonly chatRepository: Repository<ChatEntity>,
   ) {}
 
-  async create(data: Chat): Promise<Chat> {
+  async create(data: Chat, hasCheck: boolean): Promise<Chat> {
+    if (hasCheck) {
+      const userIds = data.userChats.map((userChat) => userChat.user?.id);
+
+      const findChat = await this.chatRepository
+        .createQueryBuilder('chat')
+        .innerJoin('chat.userChats', 'userChat')
+        .innerJoin('userChat.user', 'user')
+        .where('user.id IN (:...userIds)', { userIds })
+        .andWhere('chat.workspace.id = :workspaceId', {
+          workspaceId: data.workspace.id,
+        })
+        .groupBy('chat.id')
+        .having('COUNT(DISTINCT user.id) = :userCount', {
+          userCount: userIds.length,
+        })
+        .getOne();
+
+      if (findChat) {
+        return ChatMapper.toDomain(findChat);
+      }
+    }
+
     const persistenceModel = ChatMapper.toPersistence(data);
     const newEntity = await this.chatRepository.save(
       this.chatRepository.create(persistenceModel),

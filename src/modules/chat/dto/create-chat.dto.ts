@@ -18,4 +18,8 @@ export class createChatDto {
   @ApiPropertyOptional({ type: Workspaces })
   @IsOptional()
   workspace: Workspaces;
+
+  @ApiPropertyOptional({ type: Boolean })
+  @IsOptional()
+  hasCheck: boolean;
 }

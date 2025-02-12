@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConnectedUserService } from './connected-user.service';
-import { ChatService } from './chat.service';
 import { sendMessagePrivateDto } from '../dto/send-message.dto';
 import { User } from '../../users/domain/user';
 
@@ -8,33 +7,15 @@ import { DefaultEventsMap, Server } from 'socket.io';
 import { createMessageDto } from '../dto/create-message.dto';
 import { UserEntity } from '../../users/infrastructure/persistence/relational/entities/user.entity';
 import { Chat } from '../domain/chat';
-import { MessageService } from './messge.service';
 import { ChatGatewaySubscribeKeys } from '../enum/gateway.enum';
-import { ChatType } from '../enum/chat.enum';
-import { WorkspacesService } from '../../workspaces/workspaces.service';
+import { MessageService } from './message.service';
 
 @Injectable()
 export class ChatGatewayService {
   constructor(
     private readonly connectedUserService: ConnectedUserService,
-    private readonly chatService: ChatService,
     private readonly messageService: MessageService,
-    private readonly workspaceService: WorkspacesService,
   ) {}
-
-  private userMessageTracker: Map<string, number> = new Map();
-
-  private isUserSendingConsecutiveMessages(userId: string): boolean {
-    const currentTime = Date.now();
-    const lastMessageTime = this.userMessageTracker.get(userId);
-
-    if (!lastMessageTime) {
-      return false;
-    }
-
-    const timeDifference = currentTime - lastMessageTime;
-    return timeDifference < 3000;
-  }
 
   async sendMessagePrivateService({
     recipientId,
@@ -47,13 +28,20 @@ export class ChatGatewayService {
     user: User;
     server: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
   }) {
-    const findSocketId =
-      await this.connectedUserService.findByUserId(recipientId);
+    await this.sendMessagePrivateUpdateDbService({ body, user });
 
-    if (findSocketId) {
+    const [recipientSocket, sender] = await Promise.all([
+      this.connectedUserService.findByUserId(recipientId),
+      this.connectedUserService.findByUserId(user.id),
+    ]);
+
+    if (recipientSocket) {
       server
-        .to(findSocketId.socketId)
-        .emit(ChatGatewaySubscribeKeys.RECEIVE_MESSAGE, { ...body, user });
+        .to(recipientSocket.socketId)
+        .emit(ChatGatewaySubscribeKeys.RECEIVE_MESSAGE, {
+          ...body,
+          user: sender?.user,
+        });
     }
   }
 
@@ -72,37 +60,6 @@ export class ChatGatewayService {
       type: body.type,
       content: body.content,
     };
-    const findChat =
-      body.chatId && (await this.chatService.findOne(body.chatId));
-    // create new chat when first message
-
-    if (!findChat) {
-      const newWorkspace = await this.workspaceService.findOne(
-        body.workspaceId,
-      );
-
-      const newChat = new Chat();
-      newWorkspace!.id = body.workspaceId;
-      newChat.chatType = ChatType.PRIVATE;
-      if (newWorkspace) {
-        newChat.workspace = newWorkspace;
-      }
-      newChat.userChats = [
-        {
-          user: { id: user.id } as UserEntity,
-        },
-        {
-          user: { id: body.recipientId } as UserEntity,
-        },
-      ];
-      const chat = await this.chatService.create(newChat);
-
-      // add chat id to message
-      messageBody.chat = {
-        id: chat.id,
-      } as Chat;
-    }
-
-    await this.messageService.create(messageBody as createMessageDto);
+    return await this.messageService.create(messageBody);
   }
 }
