@@ -1,5 +1,5 @@
 ---
-to: src/database/seeds/relational/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>-seed.service.ts
+to: src/modules/database/seeds/relational/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>-seed.service.ts
 ---
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
