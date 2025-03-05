@@ -32,13 +32,17 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     paginationOptions: IPaginationOptions;
     queryOptions: IQueryOptions;
   }): Promise<DocsHub[]> {
-    const queryBuilder = this.docsHubRepository.createQueryBuilder('docsHub');
+    const nameTable = 'docs_hub';
+    const queryBuilder = this.docsHubRepository.createQueryBuilder(nameTable);
 
     applyQueryFilters({
       queryBuilder,
       queryOptions,
       paginationOptions,
+      nameTable,
     });
+
+    queryBuilder.leftJoinAndSelect(`${nameTable}.author`, 'author');
 
     const entities = await queryBuilder.getMany();
 

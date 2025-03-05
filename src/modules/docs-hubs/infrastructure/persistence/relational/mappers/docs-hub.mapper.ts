@@ -5,6 +5,7 @@ import { DocsHubEntity } from '../entities/docs-hub.entity';
 export class DocsHubMapper {
   static toDomain(raw: DocsHubEntity): DocsHub {
     const domainEntity = new DocsHub();
+    console.log('raw', raw);
     domainEntity.id = raw.id;
     domainEntity.name = raw.name;
     domainEntity.docsType = raw.docsType;

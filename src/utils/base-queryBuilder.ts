@@ -7,16 +7,18 @@ export const applyQueryFilters = <T extends ObjectLiteral>({
   queryBuilder,
   queryOptions,
   paginationOptions,
+  nameTable,
 }: {
   queryBuilder: SelectQueryBuilder<T>;
   queryOptions: IQueryOptions;
   paginationOptions: IPaginationOptions;
+  nameTable: string;
 }) => {
   const { filterRelational, filterBy, search, order } = queryOptions;
 
   if (filterRelational && filterRelational.field) {
     queryBuilder.andWhere(
-      `chat.${filterRelational.field} = :filterRelationalValue`,
+      `${nameTable}.${filterRelational.field} = :filterRelationalValue`,
       {
         filterRelationalValue: filterRelational.value,
       },
@@ -24,20 +26,20 @@ export const applyQueryFilters = <T extends ObjectLiteral>({
   }
 
   if (filterBy && filterBy.field) {
-    queryBuilder.andWhere(`chat.${filterBy.field} = :filterByValue`, {
+    queryBuilder.andWhere(`${nameTable}.${filterBy.field} = :filterByValue`, {
       filterByValue: filterBy.value,
     });
   }
 
   if (search && search.field) {
-    queryBuilder.andWhere(`chat.${search.field} LIKE :searchValue`, {
+    queryBuilder.andWhere(`${nameTable}.${search.field} LIKE :searchValue`, {
       searchValue: `%${search.value}%`,
     });
   }
 
   queryBuilder.orderBy(
-    `chat.${order.field ?? 'createdAt'}`,
-    (order.direction?.toUpperCase() as 'ASC' | 'DESC') ?? 'ASC',
+    `${nameTable}.${order.field ?? 'createdAt'}`,
+    (order.direction?.toUpperCase() as 'ASC' | 'DESC') ?? 'DESC',
   );
 
   queryBuilder
