@@ -36,12 +36,14 @@ import { WorkspacesModule } from './modules/workspaces/workspaces.module';
 import { OtpsModule } from './modules/otps/otps.module';
 import { MailModule } from './modules/mail/mail.module';
 import { chatModule } from './modules/chat/chat.module';
+import { DocsHubsModule } from './modules/docs-hubs/docs-hubs.module';
 
 @Module({
   imports: [
     chatModule,
     WorkspacesModule,
     OtpsModule,
+    DocsHubsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
