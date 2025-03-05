@@ -7,6 +7,8 @@ import { DocsHub } from '../../../../domain/docs-hub';
 import { DocsHubRepository } from '../../docs-hub.repository';
 import { DocsHubMapper } from '../mappers/docs-hub.mapper';
 import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
+import { IQueryOptions } from '../../../../../../utils/types/query-options';
+import { applyQueryFilters } from '../../../../../../utils/base-queryBuilder';
 
 @Injectable()
 export class DocsHubRelationalRepository implements DocsHubRepository {
@@ -25,13 +27,20 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
 
   async findAllWithPagination({
     paginationOptions,
+    queryOptions,
   }: {
     paginationOptions: IPaginationOptions;
+    queryOptions: IQueryOptions;
   }): Promise<DocsHub[]> {
-    const entities = await this.docsHubRepository.find({
-      skip: (paginationOptions.page - 1) * paginationOptions.limit,
-      take: paginationOptions.limit,
+    const queryBuilder = this.docsHubRepository.createQueryBuilder('docsHub');
+
+    applyQueryFilters({
+      queryBuilder,
+      queryOptions,
+      paginationOptions,
     });
+
+    const entities = await queryBuilder.getMany();
 
     return entities.map((entity) => DocsHubMapper.toDomain(entity));
   }

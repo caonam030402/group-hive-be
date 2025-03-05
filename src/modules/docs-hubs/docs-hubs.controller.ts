@@ -27,6 +27,7 @@ import {
 } from '../../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../../utils/infinity-pagination';
 import { FindAllDocsHubsDto } from './dto/find-all-docs-hubs.dto';
+import { normalizeQueryOptions } from '../../utils/base-queryBuilder';
 
 @ApiTags('Docshubs')
 @ApiBearerAuth()
@@ -53,14 +54,11 @@ export class DocsHubsController {
   async findAll(
     @Query() query: FindAllDocsHubsDto,
   ): Promise<InfinityPaginationResponseDto<DocsHub>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+    const { limit, page, queryOptions } = normalizeQueryOptions(query);
 
     return infinityPagination(
       await this.docsHubsService.findAllWithPagination({
+        queryOptions: queryOptions,
         paginationOptions: {
           page,
           limit,

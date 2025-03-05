@@ -1,6 +1,7 @@
 import { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 import { IQueryOptions } from './types/query-options';
 import { IPaginationOptions } from './types/pagination-options';
+import { PaginationAndFilterDto } from './dto/pagination-and-filter.dto';
 
 export const applyQueryFilters = <T extends ObjectLiteral>({
   queryBuilder,
@@ -53,3 +54,31 @@ export const applyQueryFilters = <T extends ObjectLiteral>({
 //     .take(paginationOptions.limit)
 //     .skip((paginationOptions.page - 1) * paginationOptions.limit);
 // };
+
+export const normalizeQueryOptions = (query: PaginationAndFilterDto) => {
+  const page = query?.page ?? 1;
+  let limit = query?.limit ?? 10;
+  if (limit > 50) {
+    limit = 50;
+  }
+
+  const queryOptions = {
+    filterRelational: {
+      field: query.filterRelationalField,
+      value: query.filterRelationalValue,
+    },
+    filterBy: {
+      field: query.filterByField,
+      value: query.filterByValue,
+    },
+    order: {
+      field: query.orderField,
+      direction: query.orderDirection,
+    },
+    search: {
+      field: query.searchField,
+      value: query.searchValue,
+    },
+  } as const;
+  return { page, limit, queryOptions };
+};

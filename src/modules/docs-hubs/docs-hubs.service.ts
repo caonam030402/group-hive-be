@@ -4,6 +4,7 @@ import { UpdateDocsHubDto } from './dto/update-docs-hub.dto';
 import { DocsHubRepository } from './infrastructure/persistence/docs-hub.repository';
 import { IPaginationOptions } from '../../utils/types/pagination-options';
 import { DocsHub } from './domain/docs-hub';
+import { IQueryOptions } from '../../utils/types/query-options';
 
 @Injectable()
 export class DocsHubsService {
@@ -15,14 +16,17 @@ export class DocsHubsService {
 
   findAllWithPagination({
     paginationOptions,
+    queryOptions,
   }: {
     paginationOptions: IPaginationOptions;
+    queryOptions: IQueryOptions;
   }) {
     return this.docsHubRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
       },
+      queryOptions: queryOptions,
     });
   }
 
