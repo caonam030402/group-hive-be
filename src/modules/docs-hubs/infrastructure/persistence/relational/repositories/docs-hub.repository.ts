@@ -53,7 +53,6 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     const entity = await this.docsHubRepository.findOne({
       where: { id },
     });
-
     return entity ? DocsHubMapper.toDomain(entity) : null;
   }
 

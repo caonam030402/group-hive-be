@@ -30,6 +30,10 @@ export class DocsHubEntity extends EntityRelationalHelper {
   @Column({ nullable: true })
   name: string;
 
+  @ApiProperty({ type: 'string', format: 'binary' })
+  @Column({ type: 'bytea', nullable: true })
+  content: Buffer;
+
   @ApiProperty()
   @ManyToOne(() => UserEntity)
   @JoinColumn()

@@ -4,4 +4,6 @@
 // import { PartialType } from '@nestjs/swagger';
 // import { CreateDocsHubDto } from './create-docs-hub.dto';
 
-export class UpdateDocsHubDto {}
+export class UpdateDocsHubDto {
+  content: Buffer;
+}

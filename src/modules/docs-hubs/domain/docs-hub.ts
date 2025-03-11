@@ -18,6 +18,9 @@ export class DocsHub {
   })
   docsType: DocsType;
 
+  @ApiProperty({ type: Buffer })
+  content: Buffer;
+
   @ApiProperty({
     type: Number,
   })

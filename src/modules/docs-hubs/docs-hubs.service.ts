@@ -31,6 +31,7 @@ export class DocsHubsService {
   }
 
   findOne(id: DocsHub['id']) {
+    console.log(this.docsHubRepository.findById(id));
     return this.docsHubRepository.findById(id);
   }
 

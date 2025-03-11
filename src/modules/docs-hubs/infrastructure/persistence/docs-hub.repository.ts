@@ -6,7 +6,7 @@ import { DocsHub } from '../../domain/docs-hub';
 
 export abstract class DocsHubRepository {
   abstract create(
-    data: Omit<DocsHub, 'id' | 'createdAt' | 'updatedAt'>,
+    data: Omit<DocsHub, 'id' | 'createdAt' | 'updatedAt' | 'content'>,
   ): Promise<DocsHub>;
 
   abstract findAllWithPagination({

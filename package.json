@@ -83,7 +83,9 @@
     "rxjs": "7.8.1",
     "source-map-support": "0.5.21",
     "swagger-ui-express": "5.0.1",
-    "typeorm": "0.3.20"
+    "typeorm": "0.3.20",
+    "y-websocket": "^2.1.0",
+    "yjs": "^13.6.24"
   },
   "devDependencies": {
     "@commitlint/cli": "19.5.0",
