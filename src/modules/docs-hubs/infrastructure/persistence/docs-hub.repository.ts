@@ -6,15 +6,22 @@ import { DocsHub } from '../../domain/docs-hub';
 
 export abstract class DocsHubRepository {
   abstract create(
-    data: Omit<DocsHub, 'id' | 'createdAt' | 'updatedAt' | 'content'>,
+    data: Omit<
+      DocsHub,
+      'id' | 'createdAt' | 'updatedAt' | 'content' | 'userDocsHub'
+    >,
   ): Promise<DocsHub>;
 
   abstract findAllWithPagination({
     paginationOptions,
     queryOptions,
+    workspaceId,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
     queryOptions: IQueryOptions;
+    workspaceId: string;
+    userId: number;
   }): Promise<DocsHub[]>;
 
   abstract findById(id: DocsHub['id']): Promise<NullableType<DocsHub>>;

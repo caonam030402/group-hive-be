@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { DocsType } from '../enum/docs-type.enum';
 import { User } from '../../users/domain/user';
+import { UserDocsHub } from './user-docs-hub';
 
 export class DocsHub {
   @ApiProperty({
@@ -30,6 +31,11 @@ export class DocsHub {
     type: Date,
   })
   lastOpenedAt: Date;
+
+  @ApiProperty({
+    type: [UserDocsHub],
+  })
+  userDocsHub: UserDocsHub[];
 
   @ApiProperty()
   createdAt: Date;

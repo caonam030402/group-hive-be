@@ -17,9 +17,13 @@ export class DocsHubsService {
   findAllWithPagination({
     paginationOptions,
     queryOptions,
+    workspaceId,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
     queryOptions: IQueryOptions;
+    workspaceId: string;
+    userId: number;
   }) {
     return this.docsHubRepository.findAllWithPagination({
       paginationOptions: {
@@ -27,6 +31,8 @@ export class DocsHubsService {
         limit: paginationOptions.limit,
       },
       queryOptions: queryOptions,
+      userId,
+      workspaceId,
     });
   }
 

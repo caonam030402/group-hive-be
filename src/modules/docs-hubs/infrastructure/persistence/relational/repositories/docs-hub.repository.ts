@@ -28,9 +28,13 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
   async findAllWithPagination({
     paginationOptions,
     queryOptions,
+    workspaceId,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
     queryOptions: IQueryOptions;
+    workspaceId: string;
+    userId: number;
   }): Promise<DocsHub[]> {
     const nameTable = 'docs_hub';
     const queryBuilder = this.docsHubRepository.createQueryBuilder(nameTable);
@@ -43,6 +47,13 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     });
 
     queryBuilder.leftJoinAndSelect(`${nameTable}.author`, 'author');
+
+    queryBuilder.where({
+      workspaceId,
+      author: {
+        id: userId,
+      },
+    });
 
     const entities = await queryBuilder.getMany();
 

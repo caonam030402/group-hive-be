@@ -63,6 +63,8 @@ export class DocsHubsController {
           page,
           limit,
         },
+        workspaceId: query.workspaceId,
+        userId: query.userId,
       }),
       { page, limit },
     );

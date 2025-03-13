@@ -1,3 +1,4 @@
+import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
 import { DocsHub } from '../../../../domain/docs-hub';
 import { DocsHubEntity } from '../entities/docs-hub.entity';
 
@@ -7,7 +8,7 @@ export class DocsHubMapper {
     domainEntity.id = raw.id;
     domainEntity.name = raw.name;
     domainEntity.docsType = raw.docsType;
-    // domainEntity.author = UserMapper.toDomain(raw.author);
+    domainEntity.author = UserMapper.toDomain(raw.author);
     domainEntity.lastOpenedAt = raw.lastOpenedAt;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -22,7 +23,7 @@ export class DocsHubMapper {
     }
     persistenceEntity.name = domainEntity.name;
     persistenceEntity.docsType = domainEntity.docsType;
-    // persistenceEntity.author = UserMapper.toPersistence(domainEntity.author);
+    persistenceEntity.author = UserMapper.toPersistence(domainEntity.author);
     persistenceEntity.lastOpenedAt = domainEntity.lastOpenedAt;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;

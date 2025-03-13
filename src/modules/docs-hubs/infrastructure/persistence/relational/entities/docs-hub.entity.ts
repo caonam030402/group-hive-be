@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -11,6 +12,7 @@ import { EntityRelationalHelper } from '../../../../../../utils/relational-entit
 import { ApiProperty } from '@nestjs/swagger';
 import { DocsType } from '../../../../enum/docs-type.enum';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
+import { UserDocsHubEntity } from './user-docs-hub.entity';
 
 @Entity({
   name: 'docs_hub',
@@ -42,6 +44,10 @@ export class DocsHubEntity extends EntityRelationalHelper {
   @ApiProperty()
   @CreateDateColumn({ type: 'timestamptz' })
   lastOpenedAt: Date;
+
+  @ApiProperty()
+  @OneToMany(() => UserDocsHubEntity, (userDocsHub) => userDocsHub.docsHub)
+  userDocsHub: UserDocsHubEntity;
 
   @ApiProperty()
   @CreateDateColumn({ type: 'timestamptz' })
