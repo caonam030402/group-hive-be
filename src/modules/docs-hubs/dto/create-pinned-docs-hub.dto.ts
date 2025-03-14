@@ -5,12 +5,6 @@ import { User } from '../../users/domain/user';
 import { DocsHub } from '../domain/docs-hub';
 
 export class CreatePinnedDocsHubDto {
-  @ApiPropertyOptional({
-    type: User,
-    example: {
-      id: '1',
-    },
-  })
   @IsOptional()
   @Type(() => User)
   user: User;

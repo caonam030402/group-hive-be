@@ -5,7 +5,9 @@ import { IQueryOptions } from '../../../../utils/types/query-options';
 import { PinnedDocsHub } from '../../domain/pinned-docs-hub.entity';
 
 export abstract class PinnedDocsHubRepository {
-  abstract create(data: Omit<PinnedDocsHub, 'id'>): Promise<PinnedDocsHub>;
+  abstract create(
+    data: Omit<PinnedDocsHub, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<PinnedDocsHub>;
 
   abstract findAllWithPagination({
     paginationOptions,

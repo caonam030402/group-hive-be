@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { DocsHubEntity } from './docs-hub.entity';
 
@@ -12,12 +19,22 @@ export class PinnedDocsHubEntity {
   id: string;
 
   @ApiProperty()
-  @ManyToOne(() => UserEntity, {
-    eager: true,
-  })
+  @ManyToOne(() => UserEntity)
+  @JoinColumn()
   user: UserEntity;
 
   @ApiProperty()
-  @ManyToOne(() => DocsHubEntity)
+  @ManyToOne(() => DocsHubEntity, {
+    eager: true,
+  })
+  @JoinColumn()
   docsHub: DocsHubEntity;
+
+  @ApiProperty()
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @ApiProperty()
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: Date;
 }

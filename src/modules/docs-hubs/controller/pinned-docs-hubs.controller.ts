@@ -1,3 +1,4 @@
+import { CurrentUser } from './../../../common/decorator/current-user.decorator';
 import {
   Controller,
   Get,
@@ -29,12 +30,13 @@ import { CreatePinnedDocsHubDto } from '../dto/create-pinned-docs-hub.dto';
 import { PinnedDocsHub } from '../domain/pinned-docs-hub.entity';
 import { UpdatePinnedDocsHubDto } from '../dto/update-pinned-docs-hub.dto';
 import { FindAllPinnedDocsHubsDto } from '../dto/find-all-pinned-docs-hubs.dto';
+import { User } from '../../users/domain/user';
 
 @ApiTags('Docshubs')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller({
-  path: 'docs-hubs/pinned',
+  path: 'docs-hubs-pinned',
   version: '1',
 })
 export class PinnedDocsHubsController {
@@ -44,8 +46,18 @@ export class PinnedDocsHubsController {
   @ApiCreatedResponse({
     type: DocsHub,
   })
-  create(@Body() createPinnedDocsHubDto: CreatePinnedDocsHubDto) {
-    return this.pinnedDocsHubsService.create(createPinnedDocsHubDto);
+  create(
+    @Body() createPinnedDocsHubDto: CreatePinnedDocsHubDto,
+    @CurrentUser() user: User,
+  ) {
+    const data = {
+      ...createPinnedDocsHubDto,
+      user: {
+        id: user.id,
+      } as User,
+    };
+
+    return this.pinnedDocsHubsService.create(data);
   }
 
   @Get()

@@ -15,6 +15,7 @@ import { UserEntity } from '../../../../../users/infrastructure/persistence/rela
 import { UserDocsHubEntity } from './user-docs-hub.entity';
 import { WorkspacesEntity } from '../../../../../workspaces/infrastructure/persistence/relational/entities/workspaces.entity';
 import { ScopeDocsEnum } from '../../../../enum/scope-docs.enum';
+import { PinnedDocsHubEntity } from './pinned-docs-hub.entity';
 
 @Entity({
   name: 'docs_hub',
@@ -55,6 +56,13 @@ export class DocsHubEntity extends EntityRelationalHelper {
   @ApiProperty()
   @OneToMany(() => UserDocsHubEntity, (userDocsHub) => userDocsHub.docsHub)
   userDocsHub: UserDocsHubEntity;
+
+  @ApiProperty()
+  @OneToMany(
+    () => PinnedDocsHubEntity,
+    (pinnedDocsHub) => pinnedDocsHub.docsHub,
+  )
+  pinnedDocsHub: PinnedDocsHubEntity;
 
   @ApiProperty()
   @Column({ nullable: true })

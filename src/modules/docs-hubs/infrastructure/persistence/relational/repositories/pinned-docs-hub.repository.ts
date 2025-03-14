@@ -45,7 +45,11 @@ export class PinnedDocsHubRelationalRepository
       nameTable,
     });
 
+    queryBuilder.leftJoinAndSelect(`${nameTable}.docsHub`, 'docsHub');
+
     const entities = await queryBuilder.getMany();
+
+    console.log('entities', entities);
 
     return entities.map((entity) => PinnedDocsHubMapper.toDomain(entity));
   }

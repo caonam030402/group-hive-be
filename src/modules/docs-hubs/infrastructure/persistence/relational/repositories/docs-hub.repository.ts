@@ -43,8 +43,7 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     });
 
     queryBuilder.leftJoinAndSelect(`${nameTable}.author`, 'author');
-    queryBuilder.leftJoinAndSelect(`${nameTable}.userDocsHub`, 'userDocsHub');
-    queryBuilder.leftJoinAndSelect('userDocsHub.user', 'user');
+    queryBuilder.leftJoin(`${nameTable}.pinnedDocsHub`, 'pinnedDocsHub');
 
     queryBuilder.where({
       workspace: {
@@ -53,16 +52,19 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     });
 
     if (isShared === true) {
-      queryBuilder.andWhere('(user.id = :userId)', {
-        userId,
-      });
+      queryBuilder
+        .leftJoin(`${nameTable}.userDocsHub`, 'userDocsHub')
+        .leftJoin('userDocsHub.user', 'user')
+        .andWhere('(user.id = :userId)', { userId });
     } else {
       queryBuilder.andWhere('scope = :scope', { scope });
     }
 
     const entities = await queryBuilder.getMany();
 
-    return entities.map((entity) => DocsHubMapper.toDomain(entity));
+    return entities.map((entity) => ({
+      ...DocsHubMapper.toDomain(entity),
+    }));
   }
 
   async findById(id: DocsHub['id']): Promise<NullableType<DocsHub>> {

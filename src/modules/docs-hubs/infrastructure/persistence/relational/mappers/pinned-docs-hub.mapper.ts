@@ -7,9 +7,12 @@ export class PinnedDocsHubMapper {
   static toDomain(raw: PinnedDocsHubEntity): PinnedDocsHub {
     const domainEntity = new PinnedDocsHub();
     domainEntity.id = raw.id;
-    domainEntity.docsHub = DocsHubMapper.toDomain(raw.docsHub);
-    domainEntity.user = UserMapper.toDomain(raw.user);
-
+    if (raw.docsHub) {
+      domainEntity.docsHub = DocsHubMapper.toDomain(raw.docsHub);
+    }
+    if (raw.user) {
+      domainEntity.user = UserMapper.toDomain(raw.user);
+    }
     return domainEntity;
   }
 

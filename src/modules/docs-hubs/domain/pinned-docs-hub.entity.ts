@@ -17,4 +17,10 @@ export class PinnedDocsHub {
     type: () => DocsHub,
   })
   docsHub: DocsHub;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
 }
