@@ -4,7 +4,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { UserEntity } from '../../users/infrastructure/persistence/relational/entities/user.entity';
 import { Type } from 'class-transformer';
 import { Workspaces } from '../../workspaces/domain/workspaces';
-import { ScopeDocsEnum } from '../enum/scope-docs';
+import { ScopeDocsEnum } from '../enum/scope-docs.enum';
 
 export class CreateDocsHubDto {
   @ApiPropertyOptional({ type: String })
@@ -19,6 +19,8 @@ export class CreateDocsHubDto {
   @ApiPropertyOptional({ type: Date })
   lastOpenedAt: Date;
 
+  @ApiPropertyOptional({ enum: ScopeDocsEnum })
+  @IsOptional()
   @ApiPropertyOptional({ enum: ScopeDocsEnum })
   scope: ScopeDocsEnum;
 

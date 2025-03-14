@@ -14,7 +14,7 @@ import { DocsType } from '../../../../enum/docs-type.enum';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { UserDocsHubEntity } from './user-docs-hub.entity';
 import { WorkspacesEntity } from '../../../../../workspaces/infrastructure/persistence/relational/entities/workspaces.entity';
-import { ScopeDocsEnum } from '../../../../enum/scope-docs';
+import { ScopeDocsEnum } from '../../../../enum/scope-docs.enum';
 
 @Entity({
   name: 'docs_hub',

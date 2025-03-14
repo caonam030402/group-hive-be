@@ -8,7 +8,6 @@ import { DocsHubRepository } from '../../docs-hub.repository';
 import { DocsHubMapper } from '../mappers/docs-hub.mapper';
 import { applyQueryFilters } from '../../../../../../utils/base-queryBuilder';
 import { IFindAllDocsHubs } from '../../../../interface/find-all-docs-hubs.interface';
-import { ScopeDocsEnum } from '../../../../enum/scope-docs';
 
 @Injectable()
 export class DocsHubRelationalRepository implements DocsHubRepository {
@@ -53,16 +52,12 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
       },
     });
 
-    if (scope === ScopeDocsEnum.PERSONAL) {
-      queryBuilder.andWhere('scope = :scope', { scope });
-    }
-
-    if (isShared) {
-      queryBuilder.andWhere('user.id = :userId AND author.id != :userId', {
+    if (isShared === true) {
+      queryBuilder.andWhere('(user.id = :userId)', {
         userId,
       });
     } else {
-      queryBuilder.andWhere('author.id = :userId', { userId });
+      queryBuilder.andWhere('scope = :scope', { scope });
     }
 
     const entities = await queryBuilder.getMany();

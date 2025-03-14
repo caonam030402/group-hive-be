@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PermissionDocsHubEntity } from '../../../../modules/docs-hubs/infrastructure/persistence/relational/entities/permission-docs-hub.entity';
-import { PermissionDocsHubEnum } from '../../../../modules/docs-hubs/enum/permission-docs';
+import { PermissionDocsHubEnum } from '../../../../modules/docs-hubs/enum/permission-docs.enum';
 
 @Injectable()
 export class PermissionDocsHubSeedService {

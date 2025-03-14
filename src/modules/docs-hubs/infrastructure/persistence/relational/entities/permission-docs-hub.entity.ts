@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../../utils/relational-entity-helper';
 import { ApiProperty } from '@nestjs/swagger';
-import { PermissionDocsHubEnum } from '../../../../enum/permission-docs';
+import { PermissionDocsHubEnum } from '../../../../enum/permission-docs.enum';
 
 @Entity({
   name: 'permission_docs_hub',

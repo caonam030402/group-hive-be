@@ -3,7 +3,7 @@ import { DocsType } from '../enum/docs-type.enum';
 import { User } from '../../users/domain/user';
 import { UserDocsHub } from './user-docs-hub';
 import { Workspaces } from '../../workspaces/domain/workspaces';
-import { ScopeDocsEnum } from '../enum/scope-docs';
+import { ScopeDocsEnum } from '../enum/scope-docs.enum';
 
 export class DocsHub {
   @ApiProperty({

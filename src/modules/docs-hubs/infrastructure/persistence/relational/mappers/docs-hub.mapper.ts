@@ -10,6 +10,7 @@ export class DocsHubMapper {
     domainEntity.name = raw.name;
     domainEntity.docsType = raw.docsType;
     domainEntity.author = UserMapper.toDomain(raw.author);
+    domainEntity.scope = raw.scope;
     if (raw.workspace) {
       domainEntity.workspace = WorkspacesMapper.toDomain(raw.workspace);
     }
@@ -29,6 +30,7 @@ export class DocsHubMapper {
     persistenceEntity.name = domainEntity.name;
     persistenceEntity.docsType = domainEntity.docsType;
     persistenceEntity.author = UserMapper.toPersistence(domainEntity.author);
+    persistenceEntity.scope = domainEntity.scope;
     if (domainEntity.workspace) {
       persistenceEntity.workspace = WorkspacesMapper.toPersistence(
         domainEntity.workspace,

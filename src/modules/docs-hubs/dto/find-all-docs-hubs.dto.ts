@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 import { PaginationAndFilterDto } from '../../../utils/dto/pagination-and-filter.dto';
-import { ScopeDocsEnum } from '../enum/scope-docs';
+import { ScopeDocsEnum } from '../enum/scope-docs.enum';
 
 export class FindAllDocsHubsDto extends PaginationAndFilterDto {
   @IsString()
