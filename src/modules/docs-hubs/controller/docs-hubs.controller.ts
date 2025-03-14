@@ -9,9 +9,9 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { DocsHubsService } from './docs-hubs.service';
-import { CreateDocsHubDto } from './dto/create-docs-hub.dto';
-import { UpdateDocsHubDto } from './dto/update-docs-hub.dto';
+import { DocsHubsService } from '.././service/docs-hubs.service';
+import { CreateDocsHubDto } from '.././dto/create-docs-hub.dto';
+import { UpdateDocsHubDto } from '.././dto/update-docs-hub.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -19,15 +19,15 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { DocsHub } from './domain/docs-hub';
+import { DocsHub } from '.././domain/docs-hub';
 import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
-} from '../../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../../utils/infinity-pagination';
-import { FindAllDocsHubsDto } from './dto/find-all-docs-hubs.dto';
-import { normalizeQueryOptions } from '../../utils/base-queryBuilder';
+} from '../../../utils/dto/infinity-pagination-response.dto';
+import { infinityPagination } from '../../../utils/infinity-pagination';
+import { FindAllDocsHubsDto } from '.././dto/find-all-docs-hubs.dto';
+import { normalizeQueryOptions } from '../../../utils/base-queryBuilder';
 
 @ApiTags('Docshubs')
 @ApiBearerAuth()

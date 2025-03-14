@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDocsHubDto } from './dto/create-docs-hub.dto';
-import { UpdateDocsHubDto } from './dto/update-docs-hub.dto';
-import { DocsHubRepository } from './infrastructure/persistence/docs-hub.repository';
-import { DocsHub } from './domain/docs-hub';
-import { IFindAllDocsHubs } from './interface/find-all-docs-hubs.interface';
+import { CreateDocsHubDto } from '../dto/create-docs-hub.dto';
+import { UpdateDocsHubDto } from '../dto/update-docs-hub.dto';
+import { DocsHubRepository } from '../infrastructure/persistence/docs-hub.repository';
+import { DocsHub } from '../domain/docs-hub';
+import { IFindAllDocsHubs } from '../interface/find-all-docs-hubs.interface';
 
 @Injectable()
 export class DocsHubsService {

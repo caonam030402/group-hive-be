@@ -19,7 +19,7 @@ import { Server, Socket } from 'socket.io';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { WsAuthGuard } from '../../common/guard/jwt-ws.guard';
-import { DocsHubsService } from './docs-hubs.service';
+import { DocsHubsService } from './service/docs-hubs.service';
 
 @UsePipes(new ValidationPipe())
 @UseGuards(WsAuthGuard)

@@ -12,7 +12,7 @@ import {
 } from '../../../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../../../utils/infinity-pagination';
 
-@ApiTags('message')
+@ApiTags('chat')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller({
