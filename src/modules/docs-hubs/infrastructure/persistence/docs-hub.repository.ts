@@ -1,8 +1,7 @@
 import { DeepPartial } from '../../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../../utils/types/nullable.type';
-import { IPaginationOptions } from '../../../../utils/types/pagination-options';
-import { IQueryOptions } from '../../../../utils/types/query-options';
 import { DocsHub } from '../../domain/docs-hub';
+import { IFindAllDocsHubs } from '../../interface/find-all-docs-hubs.interface';
 
 export abstract class DocsHubRepository {
   abstract create(
@@ -17,12 +16,8 @@ export abstract class DocsHubRepository {
     queryOptions,
     workspaceId,
     userId,
-  }: {
-    paginationOptions: IPaginationOptions;
-    queryOptions: IQueryOptions;
-    workspaceId: string;
-    userId: number;
-  }): Promise<DocsHub[]>;
+    isShared,
+  }: IFindAllDocsHubs): Promise<DocsHub[]>;
 
   abstract findById(id: DocsHub['id']): Promise<NullableType<DocsHub>>;
 

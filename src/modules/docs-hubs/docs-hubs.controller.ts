@@ -65,6 +65,8 @@ export class DocsHubsController {
         },
         workspaceId: query.workspaceId,
         userId: query.userId,
+        isShared: query.isShared,
+        scope: query.scope,
       }),
       { page, limit },
     );

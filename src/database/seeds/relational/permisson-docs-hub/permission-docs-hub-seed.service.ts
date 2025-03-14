@@ -15,9 +15,11 @@ export class PermissionDocsHubSeedService {
     const count = await this.repository.count();
 
     if (!count) {
-      const permissions = Object.values(PermissionDocsHubEnum).map(
-        (type: number) => this.repository.create({ type: type }),
-      );
+      const permissions = [
+        this.repository.create({ type: PermissionDocsHubEnum.READ }),
+        this.repository.create({ type: PermissionDocsHubEnum.WRITE }),
+        this.repository.create({ type: PermissionDocsHubEnum.ADMIN }),
+      ];
 
       await this.repository.save(permissions);
     }

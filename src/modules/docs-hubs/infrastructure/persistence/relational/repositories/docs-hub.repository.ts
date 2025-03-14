@@ -6,9 +6,9 @@ import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { DocsHub } from '../../../../domain/docs-hub';
 import { DocsHubRepository } from '../../docs-hub.repository';
 import { DocsHubMapper } from '../mappers/docs-hub.mapper';
-import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
-import { IQueryOptions } from '../../../../../../utils/types/query-options';
 import { applyQueryFilters } from '../../../../../../utils/base-queryBuilder';
+import { IFindAllDocsHubs } from '../../../../interface/find-all-docs-hubs.interface';
+import { ScopeDocsEnum } from '../../../../enum/scope-docs';
 
 @Injectable()
 export class DocsHubRelationalRepository implements DocsHubRepository {
@@ -30,12 +30,9 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     queryOptions,
     workspaceId,
     userId,
-  }: {
-    paginationOptions: IPaginationOptions;
-    queryOptions: IQueryOptions;
-    workspaceId: string;
-    userId: number;
-  }): Promise<DocsHub[]> {
+    isShared,
+    scope,
+  }: IFindAllDocsHubs): Promise<DocsHub[]> {
     const nameTable = 'docs_hub';
     const queryBuilder = this.docsHubRepository.createQueryBuilder(nameTable);
 
@@ -47,13 +44,26 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     });
 
     queryBuilder.leftJoinAndSelect(`${nameTable}.author`, 'author');
+    queryBuilder.leftJoinAndSelect(`${nameTable}.userDocsHub`, 'userDocsHub');
+    queryBuilder.leftJoinAndSelect('userDocsHub.user', 'user');
 
     queryBuilder.where({
-      workspaceId,
-      author: {
-        id: userId,
+      workspace: {
+        id: workspaceId,
       },
     });
+
+    if (scope === ScopeDocsEnum.PERSONAL) {
+      queryBuilder.andWhere('scope = :scope', { scope });
+    }
+
+    if (isShared) {
+      queryBuilder.andWhere('user.id = :userId AND author.id != :userId', {
+        userId,
+      });
+    } else {
+      queryBuilder.andWhere('author.id = :userId', { userId });
+    }
 
     const entities = await queryBuilder.getMany();
 

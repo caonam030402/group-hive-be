@@ -12,6 +12,6 @@ export class PermissionDocsHubEntity extends EntityRelationalHelper {
   id: string;
 
   @ApiProperty()
-  @Column({ enum: PermissionDocsHubEnum })
+  @Column({ enum: PermissionDocsHubEnum, nullable: true })
   type: PermissionDocsHubEnum;
 }

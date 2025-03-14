@@ -1,10 +1,19 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { PaginationAndFilterDto } from '../../../utils/dto/pagination-and-filter.dto';
+import { ScopeDocsEnum } from '../enum/scope-docs';
 
 export class FindAllDocsHubsDto extends PaginationAndFilterDto {
   @IsString()
   workspaceId: string;
 
-  @IsNumber()
+  @IsString()
   userId: number;
+
+  @IsString()
+  @IsOptional()
+  isShared: boolean;
+
+  @IsString()
+  @IsOptional()
+  scope: ScopeDocsEnum;
 }

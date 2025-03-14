@@ -1,10 +1,4 @@
-import {
-  Entity,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../../utils/relational-entity-helper';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
@@ -20,7 +14,7 @@ export class UserDocsHubEntity extends EntityRelationalHelper {
   id: string;
 
   @ApiProperty()
-  @OneToOne(() => UserEntity, {
+  @ManyToOne(() => UserEntity, {
     eager: true,
   })
   user: UserEntity;

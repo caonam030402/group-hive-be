@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateDocsHubDto } from './dto/create-docs-hub.dto';
 import { UpdateDocsHubDto } from './dto/update-docs-hub.dto';
 import { DocsHubRepository } from './infrastructure/persistence/docs-hub.repository';
-import { IPaginationOptions } from '../../utils/types/pagination-options';
 import { DocsHub } from './domain/docs-hub';
-import { IQueryOptions } from '../../utils/types/query-options';
+import { IFindAllDocsHubs } from './interface/find-all-docs-hubs.interface';
 
 @Injectable()
 export class DocsHubsService {
@@ -19,12 +18,9 @@ export class DocsHubsService {
     queryOptions,
     workspaceId,
     userId,
-  }: {
-    paginationOptions: IPaginationOptions;
-    queryOptions: IQueryOptions;
-    workspaceId: string;
-    userId: number;
-  }) {
+    isShared,
+    scope,
+  }: IFindAllDocsHubs) {
     return this.docsHubRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
@@ -33,6 +29,8 @@ export class DocsHubsService {
       queryOptions: queryOptions,
       userId,
       workspaceId,
+      isShared,
+      scope,
     });
   }
 

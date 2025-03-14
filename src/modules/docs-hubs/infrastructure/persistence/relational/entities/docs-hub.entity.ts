@@ -13,6 +13,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { DocsType } from '../../../../enum/docs-type.enum';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { UserDocsHubEntity } from './user-docs-hub.entity';
+import { WorkspacesEntity } from '../../../../../workspaces/infrastructure/persistence/relational/entities/workspaces.entity';
+import { ScopeDocsEnum } from '../../../../enum/scope-docs';
 
 @Entity({
   name: 'docs_hub',
@@ -42,12 +44,21 @@ export class DocsHubEntity extends EntityRelationalHelper {
   author: UserEntity;
 
   @ApiProperty()
+  @ManyToOne(() => WorkspacesEntity)
+  @JoinColumn()
+  workspace: WorkspacesEntity;
+
+  @ApiProperty()
   @CreateDateColumn({ type: 'timestamptz' })
   lastOpenedAt: Date;
 
   @ApiProperty()
   @OneToMany(() => UserDocsHubEntity, (userDocsHub) => userDocsHub.docsHub)
   userDocsHub: UserDocsHubEntity;
+
+  @ApiProperty()
+  @Column({ nullable: true })
+  scope: ScopeDocsEnum;
 
   @ApiProperty()
   @CreateDateColumn({ type: 'timestamptz' })
