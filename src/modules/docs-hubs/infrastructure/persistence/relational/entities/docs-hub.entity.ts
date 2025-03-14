@@ -62,7 +62,7 @@ export class DocsHubEntity extends EntityRelationalHelper {
     () => PinnedDocsHubEntity,
     (pinnedDocsHub) => pinnedDocsHub.docsHub,
   )
-  pinnedDocsHub: PinnedDocsHubEntity;
+  pinnedDocsHub: PinnedDocsHubEntity[];
 
   @ApiProperty()
   @Column({ nullable: true })

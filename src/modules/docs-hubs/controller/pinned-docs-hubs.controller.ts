@@ -66,6 +66,7 @@ export class PinnedDocsHubsController {
   })
   async findAll(
     @Query() query: FindAllPinnedDocsHubsDto,
+    @CurrentUser() user: User,
   ): Promise<InfinityPaginationResponseDto<PinnedDocsHub>> {
     const { limit, page, queryOptions } = normalizeQueryOptions(query);
 
@@ -76,6 +77,7 @@ export class PinnedDocsHubsController {
           page,
           limit,
         },
+        userId: user.id,
       }),
       { page, limit },
     );
@@ -118,5 +120,15 @@ export class PinnedDocsHubsController {
   })
   remove(@Param('id') id: string) {
     return this.pinnedDocsHubsService.remove(id);
+  }
+
+  @Delete('byDocs/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  removeByDocs(@Param('id') id: string) {
+    return this.pinnedDocsHubsService.removeByDocsHub(id);
   }
 }

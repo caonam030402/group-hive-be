@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
@@ -13,6 +14,7 @@ import { DocsHubEntity } from './docs-hub.entity';
 @Entity({
   name: 'pinned_docs_hub',
 })
+@Unique(['user', 'docsHub'])
 export class PinnedDocsHubEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')

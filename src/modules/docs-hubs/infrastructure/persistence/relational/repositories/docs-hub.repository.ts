@@ -43,12 +43,15 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     });
 
     queryBuilder.leftJoinAndSelect(`${nameTable}.author`, 'author');
-    queryBuilder.leftJoin(`${nameTable}.pinnedDocsHub`, 'pinnedDocsHub');
+    queryBuilder.leftJoinAndSelect(
+      `${nameTable}.pinnedDocsHub`,
+      'pinnedDocsHub',
+      'pinnedDocsHub.userId = :userId',
+      { userId },
+    );
 
-    queryBuilder.where({
-      workspace: {
-        id: workspaceId,
-      },
+    queryBuilder.where(`${nameTable}.workspaceId = :workspaceId`, {
+      workspaceId,
     });
 
     if (isShared === true) {
@@ -64,6 +67,7 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
 
     return entities.map((entity) => ({
       ...DocsHubMapper.toDomain(entity),
+      pinned: entity.pinnedDocsHub.length !== 0 ? true : false,
     }));
   }
 

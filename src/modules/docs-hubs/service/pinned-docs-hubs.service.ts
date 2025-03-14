@@ -5,6 +5,7 @@ import { IQueryOptions } from '../../../utils/types/query-options';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { UpdatePinnedDocsHubDto } from '../dto/update-pinned-docs-hub.dto';
 import { PinnedDocsHub } from '../domain/pinned-docs-hub.entity';
+import { DocsHub } from '../domain/docs-hub';
 
 @Injectable()
 export class PinnedDocsHubsService {
@@ -19,9 +20,11 @@ export class PinnedDocsHubsService {
   findAllWithPagination({
     paginationOptions,
     queryOptions,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
     queryOptions: IQueryOptions;
+    userId: number;
   }) {
     return this.pinnedDocsHubRepository.findAllWithPagination({
       paginationOptions: {
@@ -29,6 +32,7 @@ export class PinnedDocsHubsService {
         limit: paginationOptions.limit,
       },
       queryOptions: queryOptions,
+      userId,
     });
   }
 
@@ -45,5 +49,9 @@ export class PinnedDocsHubsService {
 
   remove(id: PinnedDocsHub['id']) {
     return this.pinnedDocsHubRepository.remove(id);
+  }
+
+  removeByDocsHub(id: DocsHub['id']) {
+    return this.pinnedDocsHubRepository.removeByDocsHub(id);
   }
 }

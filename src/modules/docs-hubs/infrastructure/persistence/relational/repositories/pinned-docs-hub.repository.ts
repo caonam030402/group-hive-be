@@ -9,6 +9,8 @@ import { PinnedDocsHub } from '../../../../domain/pinned-docs-hub.entity';
 import { IPaginationOptions } from '../../../../../../utils/types/pagination-options';
 import { IQueryOptions } from '../../../../../../utils/types/query-options';
 import { PinnedDocsHubRepository } from '../../pinned-docs-hub.repository';
+import { User } from '../../../../../users/domain/user';
+import { DocsHub } from '../../../../domain/docs-hub';
 
 @Injectable()
 export class PinnedDocsHubRelationalRepository
@@ -30,9 +32,11 @@ export class PinnedDocsHubRelationalRepository
   async findAllWithPagination({
     paginationOptions,
     queryOptions,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
     queryOptions: IQueryOptions;
+    userId: User['id'];
   }): Promise<PinnedDocsHub[]> {
     const nameTable = 'pinned_docs_hub';
     const queryBuilder =
@@ -46,10 +50,9 @@ export class PinnedDocsHubRelationalRepository
     });
 
     queryBuilder.leftJoinAndSelect(`${nameTable}.docsHub`, 'docsHub');
+    queryBuilder.where(`${nameTable}.user.id = :userId`, { userId });
 
     const entities = await queryBuilder.getMany();
-
-    console.log('entities', entities);
 
     return entities.map((entity) => PinnedDocsHubMapper.toDomain(entity));
   }
@@ -89,5 +92,9 @@ export class PinnedDocsHubRelationalRepository
 
   async remove(id: PinnedDocsHub['id']): Promise<void> {
     await this.pinnedDocsHubRepository.delete(id);
+  }
+
+  async removeByDocsHub(id: DocsHub['id']): Promise<void> {
+    await this.pinnedDocsHubRepository.delete({ docsHub: { id } });
   }
 }
