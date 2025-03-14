@@ -5,7 +5,7 @@ export interface IQueryOptions {
   };
   filterBy: {
     field?: string;
-    value?: string;
+    value?: string | number | boolean;
   };
   order: {
     field?: string;

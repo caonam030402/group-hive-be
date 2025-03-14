@@ -8,6 +8,7 @@ import { DocsHubRepository } from '../../docs-hub.repository';
 import { DocsHubMapper } from '../mappers/docs-hub.mapper';
 import { applyQueryFilters } from '../../../../../../utils/base-queryBuilder';
 import { IFindAllDocsHubs } from '../../../../interface/find-all-docs-hubs.interface';
+import { TypeTabDocsEnum } from '../../../../enum/type-tab-docs.enum';
 
 @Injectable()
 export class DocsHubRelationalRepository implements DocsHubRepository {
@@ -53,6 +54,13 @@ export class DocsHubRelationalRepository implements DocsHubRepository {
     queryBuilder.where(`${nameTable}.workspaceId = :workspaceId`, {
       workspaceId,
     });
+
+    if (
+      queryOptions.filterBy?.field === 'pinned' &&
+      queryOptions.filterBy.value == TypeTabDocsEnum.PINNED
+    ) {
+      queryBuilder.andWhere('pinnedDocsHub.userId = :userId', { userId });
+    }
 
     if (isShared === true) {
       queryBuilder

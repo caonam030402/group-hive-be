@@ -31,7 +31,7 @@ export class DocsHubMapper {
     }
     persistenceEntity.name = domainEntity.name;
     persistenceEntity.docsType = domainEntity.docsType;
-    if (persistenceEntity.author) {
+    if (domainEntity.author) {
       persistenceEntity.author = UserMapper.toPersistence(domainEntity.author);
     }
     persistenceEntity.scope = domainEntity.scope;
@@ -44,7 +44,7 @@ export class DocsHubMapper {
     persistenceEntity.lastOpenedAt = domainEntity.lastOpenedAt;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
-
+    console.log(persistenceEntity);
     return persistenceEntity;
   }
 }
